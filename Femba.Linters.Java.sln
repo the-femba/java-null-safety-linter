@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CC28F745-6433-46F0-BC21-12D560B8258E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{688C7038-F703-4D44-95CD-D4F3803DFAAD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentations", "Documentations", "{2B48818F-97E1-42FF-AB17-0197CCD88519}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{9E8F0284-209D-4093-93D9-CFA676EF8D25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Femba.Linters.Java.Parser", "Sources\Femba.Linters.Java.Parser\Femba.Linters.Java.Parser.csproj", "{1DB45438-5482-4E77-BA19-1264E75CD41A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Femba.Linters.Java.Cli", "Sources\Femba.Linters.Java.Cli\Femba.Linters.Java.Cli.csproj", "{9E43FAE6-FEC5-4871-953E-64AE4605995E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{9E480368-1B02-4AC3-B3A6-D54731F173ED}"
+	ProjectSection(SolutionItems) = preProject
+		Assets\example.java = Assets\example.java
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1DB45438-5482-4E77-BA19-1264E75CD41A} = {688C7038-F703-4D44-95CD-D4F3803DFAAD}
+		{9E43FAE6-FEC5-4871-953E-64AE4605995E} = {688C7038-F703-4D44-95CD-D4F3803DFAAD}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1DB45438-5482-4E77-BA19-1264E75CD41A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DB45438-5482-4E77-BA19-1264E75CD41A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DB45438-5482-4E77-BA19-1264E75CD41A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DB45438-5482-4E77-BA19-1264E75CD41A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E43FAE6-FEC5-4871-953E-64AE4605995E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E43FAE6-FEC5-4871-953E-64AE4605995E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E43FAE6-FEC5-4871-953E-64AE4605995E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E43FAE6-FEC5-4871-953E-64AE4605995E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
