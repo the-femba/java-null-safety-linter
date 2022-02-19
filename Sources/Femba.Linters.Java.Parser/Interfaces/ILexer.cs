@@ -59,6 +59,6 @@ public interface ILexer
 	/// <summary>
 	/// Пытается получить следующий токен до конца, пока не получит null.
 	/// </summary>
-	/// <returns>Токен.</returns>
+	/// <returns>Токены, которые были получены за время вызова этого метода.</returns>
 	IList<IToken> NextToEnd();
 }
