@@ -55,6 +55,4 @@ public sealed class Lexer : ILexer
 	{
 		throw new NotImplementedException();
 	}
-
-	
 }
