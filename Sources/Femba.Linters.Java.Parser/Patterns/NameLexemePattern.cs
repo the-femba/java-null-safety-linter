@@ -7,9 +7,7 @@ public sealed class NameLexemePattern : ILexemePattern
 {
 	private readonly Regex _regex = new(@"^[\w]+$");
 	
-	public bool IsMatch(string matcher)
-		=> _regex.IsMatch(matcher);
+	public bool IsMatch(string matcher) => _regex.IsMatch(matcher);
 
-	public string Match(string matcher)
-		=> matcher;
+	public string Match(string matcher) => matcher;
 }
