@@ -9,5 +9,5 @@ namespace Femba.Linters.Java.Parser.Patterns;
 public sealed class SymbolPattern : LexemeRegexPattern
 {
 	public SymbolPattern()
-		: base(TokenType.Symbol, new Regex(@"^([-+=<>,\.)({}*\/;:@]|==|>=|<=)$")) { }
+		: base(TokenType.Symbol, new Regex(@"^([-+=<>\.)({}*\/;:@]|==|>=|<=)$")) { }
 }
