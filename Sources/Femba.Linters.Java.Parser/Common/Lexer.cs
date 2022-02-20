@@ -97,7 +97,7 @@ public sealed class Lexer : ILexer
 
 				if (pattern is null) return null;
 
-				var result = pattern.Match(buffer, line, positionLine);
+				var result = pattern.MatchToken(buffer, line, positionLine);
 
 				_currentPosition += result.Lexeme.Length + 1;
 

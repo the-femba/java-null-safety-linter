@@ -21,7 +21,5 @@ public class RegexLexemePattern : ILexemePattern
 
 	public virtual string MatchLexeme(string matcher) => matcher;
 
-	public IToken Match(string matcher) => new Token(_type, MatchLexeme(matcher), 1, 0);
-
-	public IToken Match(string matcher, int line, int position) => new Token(_type, MatchLexeme(matcher), line, position);
+	public virtual IToken MatchToken(string matcher, int line, int position) => new Token(_type, MatchLexeme(matcher), line, position);
 }
