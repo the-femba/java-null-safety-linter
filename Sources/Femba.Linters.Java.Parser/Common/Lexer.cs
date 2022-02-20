@@ -6,6 +6,8 @@ namespace Femba.Linters.Java.Parser.Common;
 
 public sealed class Lexer : ILexer
 {
+	private delegate bool ForToEndDelegate(ref int position, char @char);
+	
 	private HashSet<ILexemePattern> _patterns;
 	
 	private List<Token> _tokens;
@@ -28,7 +30,8 @@ public sealed class Lexer : ILexer
 			new SymbolPattern(),
 			new TypePattern()
 		};
-		if (patterns is not null) foreach (var pattern in patterns) _patterns.Add(pattern);
+		if (patterns is null) return;
+		foreach (var pattern in patterns) _patterns.Add(pattern);
 	}
 	
 	public string Text { get; }
@@ -49,13 +52,13 @@ public sealed class Lexer : ILexer
 
 	public int OffsetedMaxPosition => PositionOffset + MaxPosition;
 	
-	public IList<IToken> NextToEnd()
+	public IList<IToken> LexToEnd()
 	{
 		var list = new List<IToken>();
 		
-		for (var i = CurrentPosition; i <= MaxPosition; i++)
+		for (int index = CurrentPosition; index <= MaxPosition; index++)
 		{
-			var token = Next();
+			var token = LexNext();
 			if (token is null) break;
 			list.Add(token);
 		}
@@ -63,40 +66,111 @@ public sealed class Lexer : ILexer
 		return list;
 	}
 
-	public IToken? Next()
+	public IToken? LexNext()
 	{
-		var buffer = "";
-		List<ILexemePattern>? patterns = null;
+		SkipTrash();
+		
+		var value = "";
+		
+		var startPosition = _currentPosition;
+		ILexemePattern? pattern = null;
+		int position;
 
-		for (var i = _currentPosition; i <= MaxPosition; i++)
+		for (position = _currentPosition; position <= MaxPosition; position++)
 		{
-			var symbol = Text[i];
+			position += Math.Clamp(SkipTrashAtCurrentPosition() - 1, 0, int.MaxValue);
+				
+			var @char = Text[position];
 
-			var currentBuffer = buffer;
-			if (symbol == ' ' && buffer == "") _currentPosition++;
-			else currentBuffer += symbol;
-
-			var currentPatterns = _patterns
-				.Where(e => e.IsMatch(currentBuffer))
-				.ToList();
-
-			if (currentBuffer != "" && currentPatterns.Count == 0)
+			var currentValue = value + @char;
+			var currentPattern = _patterns.FirstOrDefault(e => e.IsMatch(currentValue), null);
+			
+			if (position == MaxPosition)
 			{
-				var pattern = patterns?.FirstOrDefault();
+				if (currentPattern is null) break;
+				
+				var token = currentPattern.MatchToken(currentValue, startPosition);
+				_currentPosition = startPosition + token.Lexeme.Length;
 
-				if (pattern is null) return null;
+				return token;
+			}
+			
+			if (currentPattern is null)
+			{
+				if (pattern is null) break;
+				
+				var token = pattern.MatchToken(value, startPosition);
+				_currentPosition = startPosition + token.Lexeme.Length;
 
-				var result = pattern.MatchToken(buffer, _currentPosition);
-
-				_currentPosition += result.Lexeme.Length;
-
-				return result;
+				return token;
 			}
 
-			patterns = currentPatterns;
-			buffer = currentBuffer;
+			pattern = currentPattern;
+			value = currentValue;
+			_currentPosition = position;
 		}
 
+		_currentPosition = startPosition;
 		return null;
 	}
+
+	private int SkipTrashAtCurrentPosition()
+	{
+		var @char = Text[_currentPosition];
+
+		if (IsUnSupportedSymbol(@char) && @char is not ' ')
+		{
+			_currentPosition += 1;
+			return 1;
+		}
+
+		if (_currentPosition < MaxPosition && IsComment(@char, Text[_currentPosition + 1]))
+		{
+			return SkipComment();
+		}
+
+		return 0;
+	}
+
+	private int SkipTrash() =>
+		ForToEnd((ref int position, char @char) =>
+		{
+			if (position < MaxPosition && IsComment(@char, Text[position + 1]))
+			{
+				position += SkipComment();
+				return true;
+			}
+			
+			return IsUnSupportedSymbol(@char);
+		});
+
+	private int SkipComment() =>
+		Text[_currentPosition + 1] is '/' 
+			? SkipLineComment() 
+			: SkipClosedComment();
+
+	private int SkipLineComment() =>
+		ForToEnd((ref int _, char @char) => @char is '\n' || true);
+	
+	private int SkipClosedComment() =>
+		ForToEnd((ref int position, char @char) => position >= MaxPosition || @char is not '*' || Text[position + 1] is not '/');
+	
+	private int ForToEnd(ForToEndDelegate func)
+	{
+		var startIndex = _currentPosition;
+		int index;
+		
+		for (index = _currentPosition; index <= MaxPosition; index++)
+		{
+			if (!func(ref index, Text[index])) break;
+		}
+
+		_currentPosition = index;
+		
+		return index - startIndex;
+	}
+
+	private bool IsUnSupportedSymbol(char @char) => @char is ' ' or '\n' or '/';
+	
+	private bool IsComment(char @char, char @nextChar) => @char is '/' || @nextChar is '/' or '*';
 }

@@ -6,12 +6,14 @@ namespace Femba.Linters.Java.Parser.Tests;
 
 public class Class1
 {
+	delegate void TestDelegate (ref int x);
+	
 	[Fact]
 	public void CustomTest1()
 	{
 		var text = "void myFun1(string arg1) { }";
 		
-		var tokens = new Lexer(text).NextToEnd();
+		var tokens = new Lexer(text).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{

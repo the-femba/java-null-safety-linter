@@ -54,11 +54,11 @@ public interface ILexer
 	/// Пытается получить следующий токен. Если токен не найден, то возвращает null.
 	/// </summary>
 	/// <returns>Токен.</returns>
-	IToken? Next();
+	IToken? LexNext();
 	
 	/// <summary>
 	/// Пытается получить следующий токен до конца, пока не получит null.
 	/// </summary>
 	/// <returns>Токены, которые были получены за время вызова этого метода.</returns>
-	IList<IToken> NextToEnd();
+	IList<IToken> LexToEnd();
 }
