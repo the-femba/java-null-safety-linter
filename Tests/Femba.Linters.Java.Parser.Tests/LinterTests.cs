@@ -166,6 +166,27 @@ public class LinterTests
 	}
 	
 	[Fact]
+	public void TestMethodInvokeWithManyArgumentsLex()
+	{
+		var text = "myFun1(3, 't', myVar2);";
+		
+		var tokens = new Lexer(text).LexToEnd();
+		
+		Assert.Equal(new List<(string, TokenType)>
+		{
+			("myFun1", TokenType.Name),
+			("(", TokenType.Symbol),
+			("3", TokenType.Literal),
+			(",", TokenType.Symbol),
+			("'t'", TokenType.Literal),
+			(",", TokenType.Symbol),
+			("myVar2", TokenType.Name),
+			(")", TokenType.Symbol),
+			(";", TokenType.Symbol)
+		}, tokens.Select(e => (e.Lexeme, e.Type)));
+	}
+	
+	[Fact]
 	public void TestMethodInvokeWithLiteralCharArgumentLex()
 	{
 		var text = "myFun1('t');";
@@ -200,7 +221,7 @@ public class LinterTests
 	}
 	
 	[Fact]
-	public void TestStringLiteraLex()
+	public void TestStringLiteralLex()
 	{
 		var text = "\"text\"";
 		
@@ -213,7 +234,7 @@ public class LinterTests
 	}
 	
 	[Fact]
-	public void TestStringLiteraBackEndLex()
+	public void TestStringLiteralBackEndLex()
 	{
 		var text = "\"tex\\\"t\"";
 		
