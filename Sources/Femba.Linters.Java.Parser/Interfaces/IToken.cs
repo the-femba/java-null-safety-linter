@@ -8,12 +8,7 @@ namespace Femba.Linters.Java.Parser.Interfaces;
 public interface IToken
 {
 	/// <summary>
-	/// Линия, где находится токен в тексте.
-	/// </summary>
-	int Line { get; }
-	
-	/// <summary>
-	/// Позиция начала токена в линии.
+	/// Позиция начала токена в файле.
 	/// </summary>
 	int Position { get; }
 	

@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{9E4803
 		Assets\example.java = Assets\example.java
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Femba.Linters.Java.Parser.Tests", "Tests\Femba.Linters.Java.Parser.Tests\Femba.Linters.Java.Parser.Tests.csproj", "{08B7FA49-96C2-499C-9DDD-05D89F29DEEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1DB45438-5482-4E77-BA19-1264E75CD41A} = {688C7038-F703-4D44-95CD-D4F3803DFAAD}
 		{9E43FAE6-FEC5-4871-953E-64AE4605995E} = {688C7038-F703-4D44-95CD-D4F3803DFAAD}
+		{08B7FA49-96C2-499C-9DDD-05D89F29DEEE} = {CC28F745-6433-46F0-BC21-12D560B8258E}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1DB45438-5482-4E77-BA19-1264E75CD41A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -38,5 +41,9 @@ Global
 		{9E43FAE6-FEC5-4871-953E-64AE4605995E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E43FAE6-FEC5-4871-953E-64AE4605995E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E43FAE6-FEC5-4871-953E-64AE4605995E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08B7FA49-96C2-499C-9DDD-05D89F29DEEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08B7FA49-96C2-499C-9DDD-05D89F29DEEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08B7FA49-96C2-499C-9DDD-05D89F29DEEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08B7FA49-96C2-499C-9DDD-05D89F29DEEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

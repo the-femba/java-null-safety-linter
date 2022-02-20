@@ -4,7 +4,8 @@ namespace Femba.Linters.Java.Parser.Interfaces;
 /// Интерфейс декларирующий паттерн поиска определенного объекта.
 /// </summary>
 /// <typeparam name="TMatcher"></typeparam>
-public interface IPattern<TMatcher, TMatching>
+/// <typeparam name="TMatching"></typeparam>
+public interface IPattern<in TMatcher, out TMatching>
 {
 	/// <summary>
 	/// Проверяет, объект соответствует паттерну.

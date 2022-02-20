@@ -66,11 +66,48 @@ public sealed class Lexer : ILexer
 	public IToken? Next()
 	{
 		var buffer = "";
+		List<ILexemePattern>? patterns = null;
+		var line = 1;
+		var positionLine = 0;
+		var position = 0;
+		
+		
 		for (var i = _currentPosition; i < MaxPosition; i++)
 		{
 			var symbol = Text[i];
-			buffer += symbol;
-			var 
+			
+			positionLine++;
+			position++;
+			
+			if (symbol == '\n')
+			{
+				line += 1;
+				positionLine = 0;
+			}
+			
+			var currentBuffer = (buffer + symbol).TrimStart();
+
+			var currentPatterns = _patterns
+				.Where(e => e.IsMatch(currentBuffer))
+				.ToList();
+
+			if (currentBuffer != "" && currentPatterns.Count == 0)
+			{
+				var pattern = patterns?.FirstOrDefault();
+
+				if (pattern is null) return null;
+
+				var result = pattern.Match(buffer, line, positionLine);
+
+				_currentPosition += result.Lexeme.Length + 1;
+
+				return result;
+			}
+
+			patterns = currentPatterns;
+			buffer = currentBuffer;
 		}
+
+		return null;
 	}
 }
