@@ -15,7 +15,7 @@ Null safety static analizer (linter) for java language.
 
 Открой и пой.
 
-----
+#
 
 All rights reserved.
 
