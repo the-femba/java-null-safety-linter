@@ -1,15 +1,18 @@
 using Femba.Linters.Java.Parser.Interfaces;
 using Femba.Linters.Java.Parser.Models;
+using Femba.Linters.Java.Parser.Patterns;
 
 namespace Femba.Linters.Java.Parser.Common;
 
 public sealed class Lexer : ILexer
 {
+	private HashSet<ILexemePattern> _patterns;
+	
 	private List<Token> _tokens;
 
 	private int _currentPosition;
 	
-	public Lexer(string text, int minPosition = 0, int maxPosition = int.MaxValue, int positionOffset = 0)
+	public Lexer(string text, int minPosition = 0, int maxPosition = int.MaxValue, int positionOffset = 0, List<ILexemePattern>? patterns = null)
 	{
 		Text = text;
 		PositionOffset = positionOffset;
@@ -17,6 +20,15 @@ public sealed class Lexer : ILexer
 		MinPosition = Math.Clamp(minPosition, 0, MaxPosition);
 		_currentPosition = MinPosition;
 		_tokens = new List<Token>();
+		_patterns = new HashSet<ILexemePattern>
+		{
+			new KeywordLexemePattern(),
+			new LiteralLexemePattern(),
+			new SymbolLexemePattern(),
+			new TypeLexemePattern(),
+			new NameLexemePattern(),
+		};
+		if (patterns is not null) foreach (var pattern in patterns) _patterns.Add(pattern);
 	}
 	
 	public string Text { get; }
@@ -53,6 +65,12 @@ public sealed class Lexer : ILexer
 
 	public IToken? Next()
 	{
-		throw new NotImplementedException();
+		var buffer = "";
+		for (var i = _currentPosition; i < MaxPosition; i++)
+		{
+			var symbol = Text[i];
+			buffer += symbol;
+			var 
+		}
 	}
 }
