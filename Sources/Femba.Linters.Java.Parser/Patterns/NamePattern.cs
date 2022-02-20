@@ -6,7 +6,7 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Patterns;
 
-public sealed class NamePattern : LexemeRegexPattern
+public sealed class NamePattern : RegexPattern
 {
 	public NamePattern()
 		: base(TokenType.Name, new Regex(@"^[\w]+$")) { }

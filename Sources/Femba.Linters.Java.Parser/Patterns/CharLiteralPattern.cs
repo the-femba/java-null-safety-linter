@@ -3,7 +3,7 @@ using Femba.Linters.Java.Parser.Enums;
 
 namespace Femba.Linters.Java.Parser.Patterns;
 
-public sealed class CharLiteralPattern : LexemePattern
+public sealed class CharLiteralPattern : Pattern
 {
 	public CharLiteralPattern() : base(TokenType.Literal) { }
 

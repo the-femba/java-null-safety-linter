@@ -7,13 +7,13 @@ public sealed class Lexer : ILexer
 {
 	private delegate bool ForToEndDelegate(ref int position, char @char);
 	
-	private HashSet<ILexemePattern> _patterns;
+	private HashSet<IPattern> _patterns;
 	
 	private List<IToken> _tokens;
 
 	private int _currentPosition;
 	
-	public Lexer(string text, int minPosition = 0, int maxPosition = int.MaxValue, int positionOffset = 0, List<ILexemePattern>? patterns = null)
+	public Lexer(string text, int minPosition = 0, int maxPosition = int.MaxValue, int positionOffset = 0, List<IPattern>? patterns = null)
 	{
 		Text = text;
 		PositionOffset = positionOffset;
@@ -22,7 +22,7 @@ public sealed class Lexer : ILexer
 		_currentPosition = MinPosition;
 		_tokens = new List<IToken>();
 		// Патерны в порядке приоритета важности растравляются. Не забыть.
-		_patterns = new HashSet<ILexemePattern>
+		_patterns = new HashSet<IPattern>
 		{
 			new NumberLiteralPattern(),
 			new StringLiteralPattern(),
@@ -72,7 +72,7 @@ public sealed class Lexer : ILexer
 	{
 		var value = "";
 		
-		ILexemePattern? pattern = null;
+		IPattern? pattern = null;
 		int position;
 
 		for (position = _currentPosition; position <= MaxPosition; position++)

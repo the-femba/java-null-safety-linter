@@ -6,7 +6,7 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Patterns;
 
-public sealed class KeywordPattern : LexemeRegexPattern
+public sealed class KeywordPattern : RegexPattern
 {
 	public KeywordPattern()
 		: base(TokenType.Keyword,

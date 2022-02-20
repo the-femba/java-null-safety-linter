@@ -18,6 +18,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{9E480368-1B02-4AC3-B3A6-D54731F173ED}"
 	ProjectSection(SolutionItems) = preProject
 		Assets\example.java = Assets\example.java
+		Assets\plan-structure.png = Assets\plan-structure.png
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Femba.Linters.Java.Parser.Tests", "Tests\Femba.Linters.Java.Parser.Tests\Femba.Linters.Java.Parser.Tests.csproj", "{08B7FA49-96C2-499C-9DDD-05D89F29DEEE}"

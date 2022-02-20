@@ -5,11 +5,11 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Common;
 
-public class LexemeRegexPattern : LexemePattern
+public class RegexPattern : Pattern
 {
 	protected Regex Regex { get; }
 
-	public LexemeRegexPattern(TokenType type, Regex regex) : base(type)
+	public RegexPattern(TokenType type, Regex regex) : base(type)
 	{
 		Regex = regex;
 	}

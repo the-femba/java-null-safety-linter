@@ -2,12 +2,18 @@
 
 Null safety static analizer (linter) for java language.
 
+# How Use
+
+Открой и пой.
+
 # Support
 
+- [x] Formatter
+  - [x] Remove comments
 - [x] Lexer
   - [x] Lex single file
   - [x] Lex single simple parts of code
-- [ ] Patterns for lexer
+- [ ] Patterns (lexer)
   - [x] Symbols patter
     - [x] \>
     - [x] \<
@@ -45,14 +51,18 @@ Null safety static analizer (linter) for java language.
     - [x] string ("test")
   - [x] Types Pattern
   - [x] Names Pattern
+- [ ] Rules (lexer)
+  - [ ] If rule
 - [ ] Parser
 - [ ] Static analyzer
-- [ ] Rules for analyzer
-  - [ ] NullSafe rules
+- [ ] Features (analyzer)
+  - [ ] NullSafe features
 
-# How Use
+# Architecture
 
-Открой и пой.
+This is planed architecture.
+
+![Bebra](Assets/plan-structure.png)
 
 #
 

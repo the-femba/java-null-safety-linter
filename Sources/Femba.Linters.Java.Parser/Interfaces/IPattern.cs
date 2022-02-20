@@ -4,7 +4,7 @@ namespace Femba.Linters.Java.Parser.Interfaces;
 /// <summary>
 /// Интерфейс декларирующий паттерн поиска определенного объекта.
 /// </summary>
-public interface ILexemePattern
+public interface IPattern
 {
 	/// <summary>
 	/// Проверяет, объект соответствует паттерну.

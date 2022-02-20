@@ -4,11 +4,11 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Common;
 
-public abstract class LexemePattern : ILexemePattern
+public abstract class Pattern : IPattern
 {
 	private readonly TokenType _type;
 	
-	public LexemePattern(TokenType type)
+	public Pattern(TokenType type)
 	{
 		_type = type;
 	}

@@ -6,7 +6,7 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Patterns;
 
-public sealed class SymbolPattern : LexemeRegexPattern
+public sealed class SymbolPattern : RegexPattern
 {
 	public SymbolPattern()
 		: base(TokenType.Symbol, new Regex(@"^([-+=<>\.)({}*\/;:@]|==|>=|<=)$")) { }
