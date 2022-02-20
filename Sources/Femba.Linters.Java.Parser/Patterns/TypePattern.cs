@@ -9,10 +9,10 @@ namespace Femba.Linters.Java.Parser.Patterns;
 public sealed class TypePattern : LexemeRegexPattern
 {
 	public TypePattern()
-		: base(TokenType.Type, new Regex(@"^([\w]+)((\s+|\s+[\w]+)|)$")) { }
+		: base(TokenType.Type, new Regex(@"^([\w]+)((\s+|\s+[\w])|)$")) { }
 	
 	public override string MatchLexeme(string matcher)
 	{
-		return Regex.Match(matcher).Groups[1].Value;
+		return Regex.Match(matcher.Trim()).Groups[1].Value;
 	}
 }

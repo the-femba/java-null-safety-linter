@@ -9,5 +9,5 @@ namespace Femba.Linters.Java.Parser.Patterns;
 public sealed class KeywordPattern : LexemeRegexPattern
 {
 	public KeywordPattern()
-		: base(TokenType.Keyword, new Regex(@"^new |this|if|else|swtich|break|return$")) { }
+		: base(TokenType.Keyword, new Regex(@"^new|this|if|else|swtich|break|return$")) { }
 }
