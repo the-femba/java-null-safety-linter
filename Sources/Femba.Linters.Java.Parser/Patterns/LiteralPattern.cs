@@ -6,8 +6,8 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Patterns;
 
-public sealed class LiteralLexemePattern : RegexLexemePattern
+public sealed class LiteralPattern : LexemeRegexPattern
 {
-	public LiteralLexemePattern()
+	public LiteralPattern()
 		: base(TokenType.Literal, new Regex("^([0-9]+|[0-9]+\\.[0-9]+|\".+\"|'.')$")) { }
 }

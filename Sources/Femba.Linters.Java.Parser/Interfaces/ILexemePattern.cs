@@ -24,8 +24,7 @@ public interface ILexemePattern
 	/// Преобразует объект в объект соответствующий паттерну.
 	/// </summary>
 	/// <param name="matcher"></param>
-	/// <param name="line"></param>
 	/// <param name="position"></param>
 	/// <returns></returns>
-	public IToken MatchToken(string matcher, int line, int position);
+	public IToken MatchToken(string matcher, int position);
 }

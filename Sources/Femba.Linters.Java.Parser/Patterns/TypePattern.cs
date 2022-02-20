@@ -6,9 +6,9 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Patterns;
 
-public sealed class TypeLexemePattern : RegexLexemePattern
+public sealed class TypePattern : LexemeRegexPattern
 {
-	public TypeLexemePattern()
+	public TypePattern()
 		: base(TokenType.Type, new Regex(@"^([\w]+)((\s+|\s+[\w]+)|)$")) { }
 	
 	public override string MatchLexeme(string matcher)

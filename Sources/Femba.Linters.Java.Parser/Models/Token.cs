@@ -5,15 +5,12 @@ namespace Femba.Linters.Java.Parser.Models;
 
 public sealed class Token : IToken
 {
-	public Token(TokenType type, string lexeme, int line, int position)
+	public Token(TokenType type, string lexeme, int position)
 	{
 		Type = type;
 		Lexeme = lexeme;
-		Line = line;
 		Position = position;
 	}
-
-	public int Line { get; }
 
 	public int Position { get; }
 

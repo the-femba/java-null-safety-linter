@@ -6,8 +6,8 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Patterns;
 
-public sealed class KeywordLexemePattern : RegexLexemePattern
+public sealed class NamePattern : LexemeRegexPattern
 {
-	public KeywordLexemePattern()
-		: base(TokenType.Keyword, new Regex(@"^new |this|if|else|swtich|break|return$")) { }
+	public NamePattern()
+		: base(TokenType.Name, new Regex(@"^[\w]+$")) { }
 }

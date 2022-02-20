@@ -16,17 +16,17 @@ public sealed class Lexer : ILexer
 	{
 		Text = text;
 		PositionOffset = positionOffset;
-		MaxPosition = Math.Clamp(maxPosition, 0, text.Length);
+		MaxPosition = Math.Clamp(maxPosition, 0, text.Length - 1);
 		MinPosition = Math.Clamp(minPosition, 0, MaxPosition);
 		_currentPosition = MinPosition;
 		_tokens = new List<Token>();
 		_patterns = new HashSet<ILexemePattern>
 		{
-			new KeywordLexemePattern(),
-			new LiteralLexemePattern(),
-			new SymbolLexemePattern(),
-			new TypeLexemePattern(),
-			new NameLexemePattern(),
+			new NamePattern(),
+			new LiteralPattern(),
+			new KeywordPattern(),
+			new SymbolPattern(),
+			new TypePattern()
 		};
 		if (patterns is not null) foreach (var pattern in patterns) _patterns.Add(pattern);
 	}
@@ -53,7 +53,7 @@ public sealed class Lexer : ILexer
 	{
 		var list = new List<IToken>();
 		
-		for (var i = CurrentPosition; i < MaxPosition; i++)
+		for (var i = CurrentPosition; i <= MaxPosition; i++)
 		{
 			var token = Next();
 			if (token is null) break;
@@ -67,25 +67,14 @@ public sealed class Lexer : ILexer
 	{
 		var buffer = "";
 		List<ILexemePattern>? patterns = null;
-		var line = 1;
-		var positionLine = 0;
-		var position = 0;
-		
-		
-		for (var i = _currentPosition; i < MaxPosition; i++)
+
+		for (var i = _currentPosition; i <= MaxPosition; i++)
 		{
 			var symbol = Text[i];
-			
-			positionLine++;
-			position++;
-			
-			if (symbol == '\n')
-			{
-				line += 1;
-				positionLine = 0;
-			}
-			
-			var currentBuffer = (buffer + symbol).TrimStart();
+
+			var currentBuffer = buffer;
+			if (symbol == ' ' && buffer == "") _currentPosition++;
+			else currentBuffer += symbol;
 
 			var currentPatterns = _patterns
 				.Where(e => e.IsMatch(currentBuffer))
@@ -97,9 +86,9 @@ public sealed class Lexer : ILexer
 
 				if (pattern is null) return null;
 
-				var result = pattern.MatchToken(buffer, line, positionLine);
+				var result = pattern.MatchToken(buffer, _currentPosition);
 
-				_currentPosition += result.Lexeme.Length + 1;
+				_currentPosition += result.Lexeme.Length;
 
 				return result;
 			}

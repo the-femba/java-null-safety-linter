@@ -9,28 +9,20 @@ public class Class1
 	[Fact]
 	public void CustomTest1()
 	{
-		var programmText = "void myFun1(string arg1) { string t = \"1\"; return 3.4;}";
-		var lexer = new Lexer(programmText);
-		var tokens = lexer.NextToEnd();
-		var types = tokens.Select(e => e.Type);
+		var text = "void myFun1(string arg1) { }";
 		
-		Assert.Equal(new List<TokenType>
+		var tokens = new Lexer(text).NextToEnd();
+		
+		Assert.Equal(new List<(string, TokenType)>
 		{
-			TokenType.Type,
-			TokenType.Name,
-			TokenType.Symbol,
-			TokenType.Type,
-			TokenType.Name,
-			TokenType.Symbol,
-			TokenType.Symbol,
-			TokenType.Type,
-			TokenType.Symbol,
-			TokenType.Literal,
-			TokenType.Symbol,
-			TokenType.Keyword,
-			TokenType.Literal,
-			TokenType.Symbol,
-			TokenType.Symbol
-		}, types);
+			("void", TokenType.Type),
+			("myFun1", TokenType.Name),
+			("(", TokenType.Symbol),
+			("string", TokenType.Type),
+			("arg1", TokenType.Name),
+			(")", TokenType.Symbol),
+			("{", TokenType.Symbol),
+			("}", TokenType.Symbol)
+		}, tokens.Select(e => (e.Lexeme, e.Type)));
 	}
 }
