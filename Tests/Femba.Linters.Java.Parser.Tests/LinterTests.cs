@@ -204,6 +204,24 @@ public class LinterTests
 	}
 	
 	[Fact]
+	public void TestInvokeMethodFromVariableLex()
+	{
+		var text = "myVar1.myFun1();";
+		
+		var tokens = new Lexer(text).LexToEnd();
+		
+		Assert.Equal(new List<(string, TokenType)>
+		{
+			("myVar1", TokenType.Name),
+			(".", TokenType.Symbol),
+			("myFun1", TokenType.Name),
+			("(", TokenType.Symbol),
+			(")", TokenType.Symbol),
+			(";", TokenType.Symbol)
+		}, tokens.Select(e => (e.Lexeme, e.Type)));
+	}
+	
+	[Fact]
 	public void TestMethodInvokeWithLiteralStringArgumentLex()
 	{
 		var text = "myFun1(\"text\");";
