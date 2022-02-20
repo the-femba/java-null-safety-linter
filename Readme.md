@@ -13,6 +13,8 @@ Null safety static analizer (linter) for java language.
 
 # How Use
 
+Открой и пой.
+
 ----
 
 All rights reserved.
