@@ -222,6 +222,116 @@ public class LinterTests
 	}
 	
 	[Fact]
+	public void TestCreateNewObjectAndWriteToVarLex()
+	{
+		var text = "Point point1 = new Point();";
+		
+		var tokens = new Lexer(text).LexToEnd();
+		
+		Assert.Equal(new List<(string, TokenType)>
+		{
+			("Point", TokenType.Type),
+			("point1", TokenType.Name),
+			("=", TokenType.Symbol),
+			("new", TokenType.Keyword),
+			("Point", TokenType.Name),
+			("(", TokenType.Symbol),
+			(")", TokenType.Symbol),
+			(";", TokenType.Symbol)
+		}, tokens.Select(e => (e.Lexeme, e.Type)));
+	}
+	
+	[Fact]
+	public void TestIfElseConstructionLex()
+	{
+		var text = "if (a == 1) { } else if (a == b) { } else { }";
+		
+		var tokens = new Lexer(text).LexToEnd();
+
+		var expected = new List<(string, TokenType)>
+		{
+			("if", TokenType.Keyword),
+			("(", TokenType.Symbol),
+			("a", TokenType.Name),
+			("==", TokenType.Symbol),
+			("1", TokenType.Literal),
+			(")", TokenType.Symbol),
+			("{", TokenType.Symbol),
+			("}", TokenType.Symbol),
+
+			("else", TokenType.Keyword),
+			("if", TokenType.Keyword),
+			("(", TokenType.Symbol),
+			("a", TokenType.Name),
+			("==", TokenType.Symbol),
+			("b", TokenType.Name),
+			(")", TokenType.Symbol),
+			("{", TokenType.Symbol),
+			("}", TokenType.Symbol),
+
+			("else", TokenType.Keyword),
+			("{", TokenType.Symbol),
+			("}", TokenType.Symbol)
+		};
+
+		var actual = tokens.Select(e => (e.Lexeme, e.Type));
+		
+		Assert.Equal(expected, actual);
+	}
+	
+	[Fact]
+	public void TestCodeInMethodWithReturnWithVariableReturnLex()
+	{
+		var text = "{ int a = 4.13; return a; }";
+		
+		var tokens = new Lexer(text).LexToEnd();
+
+		var expected = new List<(string, TokenType)>
+		{
+			("{", TokenType.Symbol),
+			
+			("int", TokenType.Type),
+			("a", TokenType.Name),
+			("=", TokenType.Symbol),
+			("4.13", TokenType.Literal),
+			(";", TokenType.Symbol),
+			
+			("return", TokenType.Keyword),
+			("a", TokenType.Name),
+			(";", TokenType.Symbol),
+			
+			("}", TokenType.Symbol),
+		};
+
+		var actual = tokens.Select(e => (e.Lexeme, e.Type));
+		
+		Assert.Equal(expected, actual);
+	}
+	
+	[Fact]
+	public void TestCodeInMethodWithReturnWithLiteralReturnLex()
+	{
+		var text = "{ return 4.13; }";
+		
+		var tokens = new Lexer(text).LexToEnd();
+
+		var expected = new List<(string, TokenType)>
+		{
+			("{", TokenType.Symbol),
+			
+			("return", TokenType.Keyword),
+			("4.13", TokenType.Literal),
+			(";", TokenType.Symbol),
+			
+			("}", TokenType.Symbol),
+		};
+
+		var actual = tokens.Select(e => (e.Lexeme, e.Type));
+		
+		Assert.Equal(expected, actual);
+	}
+	
+	[Fact]
 	public void TestMethodInvokeWithLiteralStringArgumentLex()
 	{
 		var text = "myFun1(\"text\");";
@@ -261,6 +371,80 @@ public class LinterTests
 		Assert.Equal(new List<(string, TokenType)>
 		{
 			("\"tex\\\"t\"", TokenType.Literal)
+		}, tokens.Select(e => (e.Lexeme, e.Type)));
+	}
+	
+	[Fact]
+	public void TestThisKeywordAsToVarLex()
+	{
+		var text = "MyClass myVar = this;";
+		
+		var tokens = new Lexer(text).LexToEnd();
+		
+		Assert.Equal(new List<(string, TokenType)>
+		{
+			("MyClass", TokenType.Type),
+			("myVar", TokenType.Name),
+			("=", TokenType.Symbol),
+			("this", TokenType.Name),
+			(";", TokenType.Symbol)
+		}, tokens.Select(e => (e.Lexeme, e.Type)));
+	}
+	
+	[Fact]
+	public void TestThisKeywordInvokeFieldLex()
+	{
+		var text = "this.myField;";
+		
+		var tokens = new Lexer(text).LexToEnd();
+		
+		Assert.Equal(new List<(string, TokenType)>
+		{
+			("this", TokenType.Name),
+			(".", TokenType.Symbol),
+			("myField", TokenType.Name),
+			(";", TokenType.Symbol)
+		}, tokens.Select(e => (e.Lexeme, e.Type)));
+	}
+	
+	[Fact]
+	public void TestSwitchLex()
+	{
+		var text = "switch (myVar1) { case 1: myFun1(); break; default: myFun2(); }";
+		
+		var tokens = new Lexer(text).LexToEnd();
+		
+		Assert.Equal(new List<(string, TokenType)>
+		{
+			("switch", TokenType.Keyword),
+			
+			("(", TokenType.Symbol),
+			("myVar1", TokenType.Name),
+			(")", TokenType.Symbol),
+			
+			("{", TokenType.Symbol),
+			
+			("case", TokenType.Keyword),
+			("1", TokenType.Literal),
+			(":", TokenType.Symbol),
+			
+			("myFun1", TokenType.Name),
+			("(", TokenType.Symbol),
+			(")", TokenType.Symbol),
+			(";", TokenType.Symbol),
+			
+			("break", TokenType.Keyword),
+			(";", TokenType.Symbol),
+			
+			("default", TokenType.Keyword),
+			(":", TokenType.Symbol),
+			
+			("myFun2", TokenType.Name),
+			("(", TokenType.Symbol),
+			(")", TokenType.Symbol),
+			(";", TokenType.Symbol),
+			
+			("}", TokenType.Symbol),
 		}, tokens.Select(e => (e.Lexeme, e.Type)));
 	}
 }

@@ -21,13 +21,14 @@ public sealed class Lexer : ILexer
 		MinPosition = Math.Clamp(minPosition, 0, MaxPosition);
 		_currentPosition = MinPosition;
 		_tokens = new List<IToken>();
+		// Патерны в порядке приоритета важности растравляются. Не забыть.
 		_patterns = new HashSet<ILexemePattern>
 		{
 			new NumberLiteralPattern(),
 			new StringLiteralPattern(),
 			new CharLiteralPattern(),
-			new NamePattern(),
 			new KeywordPattern(),
+			new NamePattern(),
 			new SymbolPattern(),
 			new TypePattern()
 		};
