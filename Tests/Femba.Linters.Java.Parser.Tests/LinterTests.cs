@@ -369,7 +369,7 @@ public class LinterTests
 		var tokens = new Lexer(text).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
-		{
+		{ 
 			("\"tex\\\"t\"", TokenType.Literal)
 		}, tokens.Select(e => (e.Lexeme, e.Type)));
 	}
@@ -404,6 +404,22 @@ public class LinterTests
 			(".", TokenType.Symbol),
 			("myField", TokenType.Name),
 			(";", TokenType.Symbol)
+		}, tokens.Select(e => (e.Lexeme, e.Type)));
+	}
+	
+	[Fact]
+	public void TestAttributeLex()
+	{
+		var text = "@NotNull Point nonNullP";
+		
+		var tokens = new Lexer(text).LexToEnd();
+		
+		Assert.Equal(new List<(string, TokenType)>
+		{
+			("@", TokenType.Symbol),
+			("NotNull", TokenType.Type),
+			("Point", TokenType.Type),
+			("nonNullP", TokenType.Name)
 		}, tokens.Select(e => (e.Lexeme, e.Type)));
 	}
 	

@@ -21,6 +21,7 @@ Null safety static analizer (linter) for java language.
     - [x] \>=
     - [x] \<=
     - [x] \==
+    - [x] \!=
     - [x] \:
     - [x] \.
     - [x] \;
