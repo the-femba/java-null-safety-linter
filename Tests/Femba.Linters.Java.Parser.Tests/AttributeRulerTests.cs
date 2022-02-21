@@ -14,7 +14,7 @@ public class AttributeRulerTests
 		var text = "@NotNull int test;";
 		
 		var lexer = new Lexer(text);
-		var ruler = new Ruler(new AttributeRule());
+		var ruler = new Ruler(new AnnotationRule());
 		
 		ruler.Rule(lexer.LexToEnd().ToList());
 	}
@@ -25,7 +25,7 @@ public class AttributeRulerTests
 		var text = "@NotNull";
 		
 		var lexer = new Lexer(text);
-		var ruler = new Ruler(new AttributeRule());
+		var ruler = new Ruler(new AnnotationRule());
 		
 		ruler.Rule(lexer.LexToEnd().ToList());
 	}
@@ -36,7 +36,7 @@ public class AttributeRulerTests
 		var text = "@23.4 int";
 		
 		var lexer = new Lexer(text);
-		var ruler = new Ruler(new AttributeRule());
+		var ruler = new Ruler(new AnnotationRule());
 		
 		Assert.Throws<RuleLinterException>(() =>
 			ruler.Rule(lexer.LexToEnd().ToList()));

@@ -1,6 +1,6 @@
 namespace Femba.Linters.Java.Parser.Interfaces;
 
-public interface IParser
+public interface IDeclarationNode : INode
 {
-	INode Parse();
+	
 }

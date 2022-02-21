@@ -4,7 +4,7 @@ using Femba.Linters.Java.Parser.Interfaces;
 
 namespace Femba.Linters.Java.Parser.Rules;
 
-public sealed class AttributeRule : IRule
+public sealed class AnnotationRule : IRule
 {
 	public void Rule(IReadOnlyList<IToken> tokens)
 	{
