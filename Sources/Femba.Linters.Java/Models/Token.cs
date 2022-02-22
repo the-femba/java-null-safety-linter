@@ -3,16 +3,15 @@ using Femba.Linters.Java.Parser.Interfaces;
 
 namespace Femba.Linters.Java.Parser.Models;
 
-public sealed record Token : IToken
+public sealed class Token : IToken
 {
-	public Token(TokenType type, string lexeme, int position)
+	public Token(TokenType type, string lexeme)
 	{
 		Type = type;
 		Lexeme = lexeme;
-		Position = position;
 	}
 
-	public int Position { get; }
+	public int Position { get; init;  }
 
 	public TokenType Type { get; }
 

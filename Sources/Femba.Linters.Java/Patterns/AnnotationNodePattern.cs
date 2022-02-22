@@ -22,8 +22,10 @@ public sealed class AnnotationNodePattern : NodePattern<AnnotationNode>
 		var type = partition[1];
 
 		var typeNode = new TypeNodePattern().Part(new []{type});
-		
+
 		node = new AnnotationNode(typeNode);
+		
+		typeNode.Parent = node;
 		
 		return partition.Take(2).ToArray();
 	}

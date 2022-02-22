@@ -38,7 +38,7 @@ public class AttributeRulerTests
 		
 		var lexer = new Lexer(text);
 		
-		Assert.Throws<RuleLinterException>(() =>
+		Assert.Throws<ParseLinterException>(() =>
 			_ruler.Rule(lexer.LexToEnd().ToList()));
 	}
 }

@@ -15,9 +15,9 @@ public abstract class TokenPattern : ITokenPattern
 	
 	public abstract bool IsPart(string partition);
 
-	public IToken Part(string partition) => Part(partition, 0);
+	public IToken Part(string partition) => new Token(_type, PartLexeme(partition));
 
 	protected virtual string PartLexeme(string partition) => partition;
 
-	public virtual IToken Part(string partition, int position) => new Token(_type, PartLexeme(partition), position);
+	public virtual IToken Part(string partition, int position) => new Token(_type, PartLexeme(partition)) {Position = position};
 }

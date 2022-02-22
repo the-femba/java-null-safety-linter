@@ -29,6 +29,8 @@ public sealed class VariableNodePattern : NodePattern<VariableNode>
 			EndPosition = name.Position + name.Lexeme.Length
 		};
 
+		typeNode.Parent = typeNode;
+
 		return new[] {type, name};
 	}
 }

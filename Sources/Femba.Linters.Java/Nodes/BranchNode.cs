@@ -4,10 +4,16 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Nodes;
 
-public sealed record BranchNode : Node, IExecutableNode
+public sealed class BranchNode : Node, IExecutableNode
 {
-	public IReadOnlyDictionary<ConditionNode, IReadOnlyList<INode>> Sticks { get; init; } =
-		new Dictionary<ConditionNode, IReadOnlyList<INode>>();
+	public BranchNode(ConditionNode condition)
+	{
+		Condition = condition;
+	}
 
-	public IReadOnlyList<ConditionNode> Conditions => Sticks.Keys.ToList();
+	public ConditionNode Condition { get; }
+
+	public IReadOnlyList<INode> Stick { get; init; } = Array.Empty<INode>();
+	
+	public override IReadOnlyList<INode> Children => Stick;
 }
