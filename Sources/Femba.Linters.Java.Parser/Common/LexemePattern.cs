@@ -4,18 +4,20 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Common;
 
-public abstract class Pattern : IPattern
+public abstract class TokenPattern : ITokenPattern
 {
 	private readonly TokenType _type;
 	
-	public Pattern(TokenType type)
+	public TokenPattern(TokenType type)
 	{
 		_type = type;
 	}
 	
-	public abstract bool IsMatch(string matcher);
+	public abstract bool IsPart(string partition);
 
-	public abstract string MatchLexeme(string matcher);
+	public IToken Part(string partition) => Part(partition, 0);
 
-	public virtual IToken MatchToken(string matcher, int position) => new Token(_type, MatchLexeme(matcher), position);
+	protected virtual string PartLexeme(string partition) => partition;
+
+	public virtual IToken Part(string partition, int position) => new Token(_type, PartLexeme(partition), position);
 }

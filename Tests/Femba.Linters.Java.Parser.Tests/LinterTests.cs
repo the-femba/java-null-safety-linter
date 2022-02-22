@@ -1,11 +1,24 @@
 ﻿using Femba.Linters.Java.Parser.Common;
 using Femba.Linters.Java.Parser.Enums;
+using Femba.Linters.Java.Parser.Interfaces;
+using Femba.Linters.Java.Parser.Patterns;
 using Xunit;
 
 namespace Femba.Linters.Java.Parser.Tests;
 
 public class LinterTests
 {
+	private readonly HashSet<ITokenPattern> _patterns = new HashSet<ITokenPattern>
+	{
+		new NumberLiteralTokenPattern(),
+		new StringLiteralTokenPattern(),
+		new CharLiteralTokenPattern(),
+		new KeywordTokenPattern(),
+		new NameTokenPattern(),
+		new SymbolTokenPattern(),
+		new TypeTokenPattern()
+	};
+	
 	delegate void TestDelegate (ref int x);
 	
 	[Fact]
@@ -13,7 +26,7 @@ public class LinterTests
 	{
 		var text = "void myFun1(string arg1) { }";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -33,7 +46,7 @@ public class LinterTests
 	{
 		var text = "int test = 2;";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -50,7 +63,7 @@ public class LinterTests
 	{
 		var text = "int test = \"text\";";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -67,7 +80,7 @@ public class LinterTests
 	{
 		var text = "int test = 't';";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -84,7 +97,7 @@ public class LinterTests
 	{
 		var text = "int test1 = testOld;";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -101,7 +114,7 @@ public class LinterTests
 	{
 		var text = "int test = myFunc2();";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -120,7 +133,7 @@ public class LinterTests
 	{
 		var text = "myFun1();";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -136,7 +149,7 @@ public class LinterTests
 	{
 		var text = "myFun1(test);";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -153,7 +166,7 @@ public class LinterTests
 	{
 		var text = "myFun1(3);";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -170,7 +183,7 @@ public class LinterTests
 	{
 		var text = "myFun1(3, 't', myVar2);";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -191,7 +204,7 @@ public class LinterTests
 	{
 		var text = "myFun1('t');";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -208,7 +221,7 @@ public class LinterTests
 	{
 		var text = "myVar1.myFun1();";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -226,7 +239,7 @@ public class LinterTests
 	{
 		var text = "Point point1 = new Point();";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -246,7 +259,7 @@ public class LinterTests
 	{
 		var text = "if (a == 1) { } else if (a == b) { } else { }";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 
 		var expected = new List<(string, TokenType)>
 		{
@@ -284,7 +297,7 @@ public class LinterTests
 	{
 		var text = "{ int a = 4.13; return a; }";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 
 		var expected = new List<(string, TokenType)>
 		{
@@ -313,7 +326,7 @@ public class LinterTests
 	{
 		var text = "{ return 4.13; }";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 
 		var expected = new List<(string, TokenType)>
 		{
@@ -336,7 +349,7 @@ public class LinterTests
 	{
 		var text = "myFun1(\"text\");";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -353,7 +366,7 @@ public class LinterTests
 	{
 		var text = "\"text\"";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -366,7 +379,7 @@ public class LinterTests
 	{
 		var text = "\"tex\\\"t\"";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{ 
@@ -379,7 +392,7 @@ public class LinterTests
 	{
 		var text = "MyClass myVar = this;";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -396,7 +409,7 @@ public class LinterTests
 	{
 		var text = "this.myField;";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -412,7 +425,7 @@ public class LinterTests
 	{
 		var text = "@NotNull Point nonNullP";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{
@@ -428,7 +441,7 @@ public class LinterTests
 	{
 		var text = "switch (myVar1) { case 1: myFun1(); break; default: myFun2(); }";
 		
-		var tokens = new Lexer(text).LexToEnd();
+		var tokens = new Lexer(text, patterns: _patterns).LexToEnd();
 		
 		Assert.Equal(new List<(string, TokenType)>
 		{

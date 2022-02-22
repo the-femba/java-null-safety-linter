@@ -1,6 +1,7 @@
 using Femba.Linters.Java.Parser.Common;
 using Femba.Linters.Java.Parser.Enums;
 using Femba.Linters.Java.Parser.Exceptions;
+using Femba.Linters.Java.Parser.Interfaces;
 using Femba.Linters.Java.Parser.Rules;
 using Xunit;
 
@@ -8,15 +9,16 @@ namespace Femba.Linters.Java.Parser.Tests;
 
 public class AttributeRulerTests
 {
+	private readonly Ruler _ruler = new Ruler(new HashSet<IRule> {new AnnotationRule()});
+	
 	[Fact]
 	public void TestNormalAttributeState()
 	{
 		var text = "@NotNull int test;";
 		
 		var lexer = new Lexer(text);
-		var ruler = new Ruler(new AnnotationRule());
 		
-		ruler.Rule(lexer.LexToEnd().ToList());
+		_ruler.Rule(lexer.LexToEnd().ToList());
 	}
 	
 	[Fact]
@@ -25,9 +27,8 @@ public class AttributeRulerTests
 		var text = "@NotNull";
 		
 		var lexer = new Lexer(text);
-		var ruler = new Ruler(new AnnotationRule());
 		
-		ruler.Rule(lexer.LexToEnd().ToList());
+		_ruler.Rule(lexer.LexToEnd().ToList());
 	}
 	
 	[Fact]
@@ -36,9 +37,8 @@ public class AttributeRulerTests
 		var text = "@23.4 int";
 		
 		var lexer = new Lexer(text);
-		var ruler = new Ruler(new AnnotationRule());
 		
 		Assert.Throws<RuleLinterException>(() =>
-			ruler.Rule(lexer.LexToEnd().ToList()));
+			_ruler.Rule(lexer.LexToEnd().ToList()));
 	}
 }

@@ -6,13 +6,13 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Patterns;
 
-public sealed class TypePattern : RegexPattern
+public sealed class TypeTokenPattern : RegexTokenPattern
 {
-	public TypePattern()
+	public TypeTokenPattern()
 		: base(TokenType.Type, new Regex(@"^([\w]+)((\s+|\s+[\w])|)$")) { }
 	
-	public override string MatchLexeme(string matcher)
+	protected override string PartLexeme(string partition)
 	{
-		return Regex.Match(matcher.Trim()).Groups[1].Value;
+		return Regex.Match(partition.Trim()).Groups[1].Value;
 	}
 }

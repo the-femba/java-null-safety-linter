@@ -5,7 +5,7 @@ namespace Femba.Linters.Java.Parser.Nodes;
 
 public sealed class VariableInvokeNode : Node, IExecutableNode
 {
-	public VariableInvokeNode(int startPosition, int endPosition, VariableNode variable, IExecutableNode? after) : base(startPosition, endPosition)
+	public VariableInvokeNode(int startPosition, int endPosition, VariableNode variable, IExecutableNode? after = null) : base(startPosition, endPosition)
 	{
 		Variable = variable;
 		After = after;

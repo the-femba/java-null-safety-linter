@@ -7,13 +7,13 @@ public sealed class Lexer : ILexer
 {
 	private delegate bool ForToEndDelegate(ref int position, char @char);
 	
-	private HashSet<IPattern> _patterns;
+	private HashSet<ITokenPattern> _patterns;
 	
 	private List<IToken> _tokens;
 
 	private int _currentPosition;
 	
-	public Lexer(string text, int minPosition = 0, int maxPosition = int.MaxValue, int positionOffset = 0, List<IPattern>? patterns = null)
+	public Lexer(string text, int minPosition = 0, int maxPosition = int.MaxValue, int positionOffset = 0, HashSet<ITokenPattern>? patterns = null)
 	{
 		Text = text;
 		PositionOffset = positionOffset;
@@ -21,19 +21,7 @@ public sealed class Lexer : ILexer
 		MinPosition = Math.Clamp(minPosition, 0, MaxPosition);
 		_currentPosition = MinPosition;
 		_tokens = new List<IToken>();
-		// Патерны в порядке приоритета важности растравляются. Не забыть.
-		_patterns = new HashSet<IPattern>
-		{
-			new NumberLiteralPattern(),
-			new StringLiteralPattern(),
-			new CharLiteralPattern(),
-			new KeywordPattern(),
-			new NamePattern(),
-			new SymbolPattern(),
-			new TypePattern()
-		};
-		if (patterns is null) return;
-		foreach (var pattern in patterns) _patterns.Add(pattern);
+		_patterns = patterns ?? new HashSet<ITokenPattern>();
 	}
 	
 	public string Text { get; }
@@ -72,7 +60,7 @@ public sealed class Lexer : ILexer
 	{
 		var value = "";
 		
-		IPattern? pattern = null;
+		ITokenPattern? pattern = null;
 		int position;
 
 		for (position = _currentPosition; position <= MaxPosition; position++)
@@ -86,13 +74,13 @@ public sealed class Lexer : ILexer
 				value = currentValue;
 				continue;
 			}
-			var currentPattern = _patterns.FirstOrDefault(e => e != null && e.IsMatch(currentValue.Trim()), null);
+			var currentPattern = _patterns.FirstOrDefault(e => e != null && e.IsPart(currentValue.Trim()), null);
 			
 			if (currentPattern is null)
 			{
 				if (pattern is null) break;
 				
-				var token = pattern.MatchToken(value.Trim(), _currentPosition);
+				var token = pattern.Part(value.Trim(), _currentPosition);
 				_currentPosition += token.Lexeme.Length + (value.Length - value.Trim().Length);
 				
 				_tokens.Add(token);
@@ -105,7 +93,7 @@ public sealed class Lexer : ILexer
 		
 		if (pattern is null) return null;
 				
-		var token2 = pattern.MatchToken(value.Trim(), _currentPosition);
+		var token2 = pattern.Part(value.Trim(), _currentPosition);
 		_currentPosition += token2.Lexeme.Length + (value.Length - value.Trim().Length);
 				
 		_tokens.Add(token2);

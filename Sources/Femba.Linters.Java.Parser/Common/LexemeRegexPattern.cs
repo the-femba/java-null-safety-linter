@@ -5,16 +5,16 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Common;
 
-public class RegexPattern : Pattern
+public class RegexTokenPattern : TokenPattern
 {
 	protected Regex Regex { get; }
 
-	public RegexPattern(TokenType type, Regex regex) : base(type)
+	public RegexTokenPattern(TokenType type, Regex regex) : base(type)
 	{
 		Regex = regex;
 	}
 
-	public override bool IsMatch(string matcher) => Regex.IsMatch(matcher);
+	public override bool IsPart(string partition) => Regex.IsMatch(partition);
 
-	public override string MatchLexeme(string matcher) => matcher;
+	protected override string PartLexeme(string partition) => partition;
 }

@@ -4,24 +4,14 @@ namespace Femba.Linters.Java.Parser.Common;
 
 public sealed class Ruler : IRuler
 {
-	private List<IRule> _rules;
+	private HashSet<IRule> _rules;
 	
-	public Ruler()
+	public Ruler(HashSet<IRule>? rules = null)
 	{
-		_rules = new List<IRule>();
-	}
-	
-	public Ruler(List<IRule> rules)
-	{
-		_rules = rules;
-	}
-	
-	public Ruler(params IRule[] rules)
-	{
-		_rules = rules.ToList();
+		_rules = rules ?? new HashSet<IRule>();
 	}
 
-	public IList<IRule> Rules => _rules;
+	public IList<IRule> Rules => _rules.ToList();
 
 	public void Rule(List<IToken> tokens)
 	{

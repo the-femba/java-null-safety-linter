@@ -6,8 +6,8 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Patterns;
 
-public sealed class NamePattern : RegexPattern
+public sealed class NumberLiteralTokenPattern : RegexTokenPattern
 {
-	public NamePattern()
-		: base(TokenType.Name, new Regex(@"^[\w]+$")) { }
+	public NumberLiteralTokenPattern()
+		: base(TokenType.Literal, new Regex("^([0-9]+||[0-9]+\\.|[0-9]+\\.[0-9]+)$")) { }
 }

@@ -6,13 +6,13 @@ namespace Femba.Linters.Java.Parser.Nodes;
 public sealed class VariableAssignmentNode : Node, IExecutableNode
 {
 	public VariableAssignmentNode(int startPosition, int endPosition, VariableNode variable,
-		List<INode> assignments) : base(startPosition, endPosition)
+		INode assignment) : base(startPosition, endPosition)
 	{
 		Variable = variable;
-		Assignments = assignments;
+		Assignment = assignment;
 	}
 	
 	public VariableNode Variable { get; }
 	
-	public IReadOnlyList<INode> Assignments { get; }
+	public INode Assignment { get; }
 }
