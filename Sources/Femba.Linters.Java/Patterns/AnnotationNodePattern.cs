@@ -21,10 +21,10 @@ public sealed class AnnotationNodePattern : NodePattern<AnnotationNode>
 	{
 		var type = partition[1];
 
-		var typeNode = new TypeNodePattern().Part(new List<IToken> {type});
+		var typeNode = new TypeNodePattern().Part(new []{type});
 		
 		node = new AnnotationNode(typeNode);
 		
-		return partition.Take(2).ToList();
+		return partition.Take(2).ToArray();
 	}
 }

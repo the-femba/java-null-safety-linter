@@ -22,6 +22,6 @@ public sealed class TypeNodePattern : NodePattern<TypeNode>
 			EndPosition = first.Position + first.Lexeme.Length
 		};
 		
-		return new List<IToken> {first};
+		return new []{first};
 	}
 }
