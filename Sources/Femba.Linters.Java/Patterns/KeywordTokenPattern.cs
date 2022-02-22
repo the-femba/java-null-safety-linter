@@ -6,9 +6,9 @@ using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Patterns;
 
-public sealed class KeywordTokenPattern : RegexTokenPattern
+public sealed class KeywordPattern : TokenRegexPattern
 {
-	public KeywordTokenPattern()
+	public KeywordPattern()
 		: base(TokenType.Keyword,
 			new Regex(@"^(new .|if\s+\(|else|else .|else\s+\(|case .+:|default|default.+:|switch\s+\(|break|return|return .)$")) { }
 

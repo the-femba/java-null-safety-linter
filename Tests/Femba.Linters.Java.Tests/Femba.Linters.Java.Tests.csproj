@@ -4,6 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>Femba.Linters.Java.Parser.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Sources\Femba.Linters.Java.Parser\Femba.Linters.Java.Parser.csproj" />
+      <ProjectReference Include="..\..\Sources\Femba.Linters.Java\Femba.Linters.Java.csproj" />
     </ItemGroup>
 
 </Project>

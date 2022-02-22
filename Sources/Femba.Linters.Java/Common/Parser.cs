@@ -14,13 +14,13 @@ public sealed class Parser : IParser
 		
 		var tokens = new Lexer(formattedText, patterns: new HashSet<ITokenPattern>
 		{
-			new NumberLiteralTokenPattern(),
+			new NumberLiteralPattern(),
 			new StringLiteralTokenPattern(),
 			new CharLiteralTokenPattern(),
-			new KeywordTokenPattern(),
-			new NameTokenPattern(),
-			new SymbolTokenPattern(),
-			new TypeTokenPattern()
+			new KeywordPattern(),
+			new NamePattern(),
+			new SymbolPattern(),
+			new TypePattern()
 		}).LexToEnd();
 		
 		new Ruler(new HashSet<IRule>

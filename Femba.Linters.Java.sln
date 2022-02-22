@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentations", "Documenta
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{9E8F0284-209D-4093-93D9-CFA676EF8D25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Femba.Linters.Java.Parser", "Sources\Femba.Linters.Java.Parser\Femba.Linters.Java.Parser.csproj", "{1DB45438-5482-4E77-BA19-1264E75CD41A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Femba.Linters.Java", "Sources\Femba.Linters.Java\Femba.Linters.Java.csproj", "{1DB45438-5482-4E77-BA19-1264E75CD41A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Femba.Linters.Java.Cli", "Sources\Femba.Linters.Java.Cli\Femba.Linters.Java.Cli.csproj", "{9E43FAE6-FEC5-4871-953E-64AE4605995E}"
 EndProject
@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{9E4803
 		Assets\plan-structure.png = Assets\plan-structure.png
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Femba.Linters.Java.Parser.Tests", "Tests\Femba.Linters.Java.Parser.Tests\Femba.Linters.Java.Parser.Tests.csproj", "{08B7FA49-96C2-499C-9DDD-05D89F29DEEE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Femba.Linters.Java.Tests", "Tests\Femba.Linters.Java.Tests\Femba.Linters.Java.Tests.csproj", "{08B7FA49-96C2-499C-9DDD-05D89F29DEEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

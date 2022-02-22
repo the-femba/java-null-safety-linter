@@ -10,13 +10,13 @@ public class LinterTests
 {
 	private readonly HashSet<ITokenPattern> _patterns = new HashSet<ITokenPattern>
 	{
-		new NumberLiteralTokenPattern(),
+		new NumberLiteralPattern(),
 		new StringLiteralTokenPattern(),
 		new CharLiteralTokenPattern(),
-		new KeywordTokenPattern(),
-		new NameTokenPattern(),
-		new SymbolTokenPattern(),
-		new TypeTokenPattern()
+		new KeywordPattern(),
+		new NamePattern(),
+		new SymbolPattern(),
+		new TypePattern()
 	};
 	
 	delegate void TestDelegate (ref int x);

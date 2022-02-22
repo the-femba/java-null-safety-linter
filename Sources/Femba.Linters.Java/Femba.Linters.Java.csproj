@@ -4,7 +4,8 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <PackageId>Femba.Linters.Java.Parser</PackageId>
+        <PackageId>Femba.Linters.Java</PackageId>
+        <RootNamespace>Femba.Linters.Java.Parser</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
