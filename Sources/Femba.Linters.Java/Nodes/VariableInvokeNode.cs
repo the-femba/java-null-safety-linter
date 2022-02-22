@@ -14,6 +14,4 @@ public sealed class VariableInvokeNode : Node, IExecutableNode
 	public VariableNode Variable { get; }
 	
 	public IExecutableNode? After { get; init; }
-
-	public override IReadOnlyList<INode> Children =>  Array.Empty<INode>();
 }

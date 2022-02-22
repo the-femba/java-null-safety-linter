@@ -14,6 +14,4 @@ public sealed class BranchNode : Node, IExecutableNode
 	public ConditionNode Condition { get; }
 
 	public IReadOnlyList<INode> Stick { get; init; } = Array.Empty<INode>();
-	
-	public override IReadOnlyList<INode> Children => Stick;
 }

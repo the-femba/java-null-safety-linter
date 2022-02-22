@@ -15,6 +15,4 @@ public sealed class VariableAssignmentNode : Node, IExecutableNode
 	public VariableNode Variable { get; }
 
 	public INode Assignment { get; }
-
-	public override IReadOnlyList<INode> Children => Array.Empty<INode>();
 }

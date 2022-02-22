@@ -4,9 +4,9 @@ public interface IParser
 {
 	IReadOnlyList<IToken> Tokens { get; }
 	
-	IReadOnlySet<INode> NodesRegion { get; }
+	IReadOnlyList<INode> Nodes { get; }
 	
-	IReadOnlyList<INode> NodesQueue { get; }
+	IReadOnlyList<INodePattern> Patterns { get; }
 
 	INode? ParseNext();
 	

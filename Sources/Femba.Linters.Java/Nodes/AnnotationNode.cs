@@ -12,6 +12,4 @@ public sealed class AnnotationNode : Node, IDeclarationNode
 	}
 
 	public TypeNode Type { get; }
-
-	public override IReadOnlyList<INode> Children => Array.Empty<INode>();
 }

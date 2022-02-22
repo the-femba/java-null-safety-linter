@@ -6,5 +6,5 @@ namespace Femba.Linters.Java.Parser.Nodes;
 
 public sealed class ConditionNode : Node, IDeclarationNode
 {
-	public override IReadOnlyList<INode> Children => Array.Empty<INode>();
+	
 }

@@ -1,5 +1,4 @@
 using Femba.Linters.Java.Parser.Common;
-using Femba.Linters.Java.Parser.Rules;
 using Xunit;
 
 namespace Femba.Linters.Java.Parser.Tests;

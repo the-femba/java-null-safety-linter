@@ -6,7 +6,7 @@ using Femba.Linters.Java.Parser.Nodes;
 
 namespace Femba.Linters.Java.Parser.Patterns;
 
-public sealed class AnnotationNodePattern : NodePattern<AnnotationNode>
+public sealed class AnnotationNodePattern : NodePattern
 {
 	public override bool IsPart(IReadOnlyList<IToken> partition)
 	{
@@ -17,13 +17,13 @@ public sealed class AnnotationNodePattern : NodePattern<AnnotationNode>
 
 	private bool IsDogSymbol(IToken token) => token.IsSymbol() && token.Lexeme == "@";
 
-	public override IReadOnlyList<IToken> Part(IReadOnlyList<IToken> partition, out AnnotationNode node)
+	public override IReadOnlyList<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
 	{
 		var type = partition[1];
 
 		var typeNode = new TypeNodePattern().Part(new []{type});
 
-		node = new AnnotationNode(typeNode);
+		node = new AnnotationNode((TypeNode) typeNode);
 		
 		typeNode.Parent = node;
 		

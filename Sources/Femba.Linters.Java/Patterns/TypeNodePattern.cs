@@ -5,14 +5,14 @@ using Femba.Linters.Java.Parser.Nodes;
 
 namespace Femba.Linters.Java.Parser.Patterns;
 
-public sealed class TypeNodePattern : NodePattern<TypeNode>
+public sealed class TypeNodePattern : NodePattern
 {
 	public override bool IsPart(IReadOnlyList<IToken> partition)
 	{
 		return partition.Count == 1 && partition.First().IsType();
 	}
 
-	public override IReadOnlyList<IToken> Part(IReadOnlyList<IToken> partition, out TypeNode node)
+	public override IReadOnlyList<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
 	{
 		var first = partition.First();
 		
