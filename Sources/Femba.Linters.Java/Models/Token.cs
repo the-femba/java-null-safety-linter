@@ -16,4 +16,19 @@ public sealed class Token : IToken
 	public TokenType Type { get; }
 
 	public string Lexeme { get; }
+
+	private bool Equals(Token other)
+	{
+		return Type == other.Type && Lexeme == other.Lexeme;
+	}
+
+	public override bool Equals(object? obj)
+	{
+		return ReferenceEquals(this, obj) || obj is Token other && Equals(other);
+	}
+
+	public override int GetHashCode()
+	{
+		return HashCode.Combine((int) Type, Lexeme);
+	}
 }

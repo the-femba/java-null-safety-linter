@@ -5,7 +5,7 @@ namespace Femba.Linters.Java.Parser.Interfaces;
 /// <summary>
 /// Интерфейс токена. 
 /// </summary>
-public interface IToken
+public interface IToken : IEquatable<IToken>
 {
 	/// <summary>
 	/// Позиция начала токена в файле.
