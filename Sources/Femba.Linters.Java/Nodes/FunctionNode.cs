@@ -1,28 +1,14 @@
 using Femba.Linters.Java.Parser.Common;
 using Femba.Linters.Java.Parser.Interfaces;
+using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Nodes;
 
-public sealed class FunctionNode : Node, IDeclarationNode
+public sealed record FunctionNode(TypeNode Type, string Name) : Node, IDeclarationNode
 {
-	public FunctionNode(int startPosition, int endPosition, TypeNode type, string name,
-		List<VariableNode>? arguments = null, List<INode>? body = null,
-		List<AnnotationNode>? annotations = null) : base(startPosition, endPosition)
-	{
-		Name = name;
-		Annotations = annotations ?? new List<AnnotationNode>();
-		Type = type;
-		Arguments = arguments ?? new List<VariableNode>();
-		Body = body ?? new List<INode>();
-	}
-	
-	public IReadOnlyList<AnnotationNode> Annotations { get; }
+	public IReadOnlyList<AnnotationNode> Annotations { get; init; } = new List<AnnotationNode>();
 
-	public string Name { get; }
-	
-	public TypeNode Type { get; }
-	
-	public IReadOnlyList<VariableNode> Arguments { get; }
-	
-	public IReadOnlyList<INode> Body { get; }
+	public IReadOnlyList<VariableNode> Arguments { get; init; } = new List<VariableNode>();
+
+	public IReadOnlyList<INode> Body { get; init; } = new List<INode>();
 }

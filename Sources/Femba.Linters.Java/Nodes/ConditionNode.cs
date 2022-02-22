@@ -1,12 +1,10 @@
 using Femba.Linters.Java.Parser.Common;
 using Femba.Linters.Java.Parser.Interfaces;
+using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Nodes;
 
-public class ConditionNode : Node, IDeclarationNode
+public record ConditionNode : Node, IDeclarationNode
 {
-	public ConditionNode(int startPosition, int endPosition) : base(startPosition, endPosition)
-	{
-		
-	}
+	
 }

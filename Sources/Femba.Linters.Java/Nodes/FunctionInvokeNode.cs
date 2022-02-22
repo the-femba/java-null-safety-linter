@@ -1,21 +1,12 @@
 using Femba.Linters.Java.Parser.Common;
 using Femba.Linters.Java.Parser.Interfaces;
+using Femba.Linters.Java.Parser.Models;
 
 namespace Femba.Linters.Java.Parser.Nodes;
 
-public sealed class FunctionInvokeNode : Node, IExecutableNode
+public sealed record FunctionInvokeNode(FunctionNode Function) : Node, IExecutableNode
 {
-	public FunctionInvokeNode(int startPosition, int endPosition, FunctionNode function,
-		List<INode>? values = null, IExecutableNode? after = null) : base(startPosition, endPosition)
-	{
-		Function = function;
-		Values = values ?? new List<INode>();
-		After = after;
-	}
-
-	public FunctionNode Function;
-
-	public IReadOnlyList<INode> Values;
+	public IReadOnlyList<INode> Values { get; init; } = new List<INode>();
 	
-	public IExecutableNode? After { get; }
+	public IExecutableNode? After { get; init; }
 }
