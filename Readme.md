@@ -6,6 +6,91 @@ Null safety static analizer (linter) for java language.
 
 Открой и пой.
 
+# Language Support
+
+## Functions
+
+Functions outside of class.
+
+```java
+void myFunc1() { }
+```
+
+```java
+void myFunc2(string text) { }
+```
+
+```java
+void myFunc2(string text);
+```
+
+Doesn't supports neasted functions beacouse java isnt support it.
+
+## Variables
+
+Create of variablee and equals ti variable;
+
+```java
+string text = "1";
+text = "2";
+```
+
+## Annotations
+
+Support only annotations for variables and arguments and without constructor.
+
+```java
+void myFunc1() { 
+  @NotNull string text = "";
+}
+```
+
+```java
+void myFunc2(@NotNull string text) { }
+```
+
+## Cascade Invoke
+
+```java
+myFunc2("text").toSomething().value;
+```
+
+## If
+
+```java
+if (value != null) {
+
+}
+else if (value > 2) {
+
+}
+else {
+
+}
+```
+
+Dosen't support simple if statement like ```if (value > 2) myFun1();```.
+
+## Switch
+
+```java
+switch (value) {
+  case 1: myFun1(); break;
+  default: myFun2(); break;
+}
+```
+
+Work with break only.
+
+Dousent suppport double statements like
+
+```java
+switch (value) {
+  case 0:
+  case 1: myFun1(); break;ё
+}
+```
+
 # Support
 
 - [x] Formatter
