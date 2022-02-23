@@ -10,14 +10,11 @@ public class ParserTests
 	[Fact]
 	public void Test1()
 	{
-		var text = "int myFun1(int a, int b) { void test() {} } int myFun2(string text, int b) { }";
+		var text = "int myFunc1() \{ int myFnc2() { int myFnc2() { } } int myFnc2() { } } int myFnc2() { } int myFunc3() { } int myFunc4() { } ";
 		
 		var parser = new Common.Parser(text, new List<INodePattern>
 		{
-			new FunctionNodePattern(),
-			new AnnotationNodePattern(),
-			new VariableNodePattern(),
-			new TypeNodePattern()
+			new FunctionNodePattern()
 		});
 
 		var node = parser.ParseToEnd();

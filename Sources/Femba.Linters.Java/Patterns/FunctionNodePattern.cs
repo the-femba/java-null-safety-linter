@@ -1,7 +1,10 @@
+using System.Linq;
 using Femba.Linters.Java.Parser.Common;
+using Femba.Linters.Java.Parser.Enums;
 using Femba.Linters.Java.Parser.Exceptions;
 using Femba.Linters.Java.Parser.Extensions;
 using Femba.Linters.Java.Parser.Interfaces;
+using Femba.Linters.Java.Parser.Models;
 using Femba.Linters.Java.Parser.Nodes;
 
 namespace Femba.Linters.Java.Parser.Patterns;
@@ -10,126 +13,100 @@ public sealed class FunctionNodePattern : NodePattern
 {
 	public override bool IsPart(IReadOnlyList<IToken> partition)
 	{
-		return partition.Count switch
-		{
-			1 => partition.First().IsType(),
-			2 => partition[0].IsType() && partition[1].IsName(),
-			> 2 => partition[0].IsType() && partition[1].IsName() && IsWithTypes(partition),
-			_ => false
-		};
-	}
-
-	private bool IsWithTypes(IReadOnlyList<IToken> partition)
-	{
 		var tokens = partition.ToList();
-		tokens.RemoveRange(0, 2);
 		
-		if (tokens.Count == 1 && tokens[0].IsSymbol() && tokens[0].Lexeme == "(") return true;
-		tokens.RemoveAt(0);
+		if (tokens.Count == 1)
+			return tokens[0].IsType();
+		if (tokens.Count == 2)
+			return tokens[0].IsType() && tokens[1].IsName();
+		if (!tokens[0].IsType() || !tokens[1].IsName() || !tokens[2].IsSymbol("(")) return false;
 
-		var variablePattern = new VariableNodePattern();
+		if (tokens.Count == 4) return true;
+
+		var closeArgBasket = tokens.FindIndex(e => e.IsSymbol(")"));
 		
-		IToken? lastToken = null;
-		var isLastBasket = false;
-		int i = 0;
-		if (tokens.Count != 1 && !tokens.First().IsSymbol(")"))
-		{
-			for (i = 0; i < tokens.Count; i++)
-			{
-				if (i != 0 && i % 2 == 0)
-				{
-					lastToken = null;
-					continue;
-				}
-			
-				var currentToken = tokens[i];
+		if (closeArgBasket < 0) return true;
 
-				if (currentToken.IsSymbol(")"))
-				{
-					if (tokens.Count < 3 && tokens.Count - 1 % 2 != 0) return false;
-					var preToken = tokens[i - 1];
-					var prePreToken = tokens[i - 2];
-					if (!variablePattern.IsPart(new[] {prePreToken, preToken})) return false;
-					isLastBasket = true;
-					break;
-				}
+		var openBodyBasket = tokens.FindIndex(e => e.IsSymbol("{"));
 
-				if (lastToken is null)
-				{
-					if (!variablePattern.IsPart(new[] {currentToken})) return false;
-				}
-				else
-				{
-					if (!variablePattern.IsPart(new[] {lastToken, currentToken})) return false;
-				}
-
-				lastToken = currentToken;
-			}	
-		}
-		else
-		{
-			isLastBasket = true;
-		}
-
-		if (!isLastBasket) return true;
+		if (openBodyBasket < 0) return true;
 		
-		tokens.RemoveRange(0, i + 1);
-		if (tokens.Count == 0) return true;
-		if (tokens.First().IsSymbol("{")) return true;
-		if (tokens.First().IsSymbol("{") && tokens.Last().IsSymbol("}")) return true;
-		return false;
+		var openToken = new Token(TokenType.Symbol, "{");
+		var closeToken = new Token(TokenType.Symbol, "}");
+
+		var closedBodyToken = tokens.FindСlosingToken(openToken, closeToken, openBodyBasket);
+
+		if (closedBodyToken is null) return true;
+
+		var r = closedBodyToken == tokens.Count - 1;
+		return r;
 	}
 
 	public override IReadOnlyList<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
 	{
-		if (!partition.Last().IsSymbol("}")) throw new ParseLinterException(
-			"The function format is bad.", partition.First());
-
-		var type = new TypeNodePattern().Part(new []{partition[0]});
-		var name = partition[1].Lexeme;
-
-		var arguments = new List<VariableNode>();
+		var tokens = partition.ToList();
 		
-		if (!partition[4].IsSymbol(")"))
+		var type = new TypeNodePattern().Part(new []{tokens[0]});
+		
+		var name = tokens[1].Lexeme;
+
+		var arguments = GetArgumentsTokens(tokens).Select(e =>
 		{
-			for (int i = 5; i < partition.Count; i += 3)
-			{
-				var first = partition[i - 1];
-				var second = partition[i - 2];
+			var curType = e[0];
+			var curName = e[1];
 
-				var arg = new VariableNodePattern().Part(new []{second, first});
-				
-				arguments.Add((VariableNode) arg);
-			}
-		}
-
-		var openBodyBasketIndex = partition.ToList().FindIndex(e => e.IsSymbol("{"));
-		var bodyTokens = partition.ToList().GetRange(openBodyBasketIndex + 1, partition.Count - openBodyBasketIndex - 2);
-
-		var body = new Common.Parser(bodyTokens, Parser!.Patterns.ToList()).ParseToEnd();
+			return new VariableNodePattern().Part(new[] {curType, curName});
+		}).ToList();
+		
+		var body = new Common.Parser(GetBodyTokens(tokens), Parser!.Patterns.ToList())
+			.ParseToEnd().ToList();
+		
+		// body.ForEach(e =>
+		// {
+		// 	if (e is FunctionNode) throw new ParseLinterException(
+		// 		"Java does not support nested functions.", partition.First());
+		// });
 
 		var func = new FunctionNode((TypeNode) type, name)
 		{
-			Arguments = arguments,
-			Body = body.ToList(),
+			// FIXME: 
+			Arguments = arguments.Select(e => (VariableNode) e).ToList(),
+			Body = body,
 			StartPosition = type.StartPosition,
-			EndPosition = partition.Last().Position + 1
+			// TODO: Added true end position relative to the closed function basket.
+			EndPosition = tokens.Last().Position
 		};
-		
-		type.Parent = func;
-		
-		foreach (var bodyNode in body)
-		{
-			bodyNode.Parent = func;
-		}
 
-		foreach (var argument in arguments)
-		{
-			argument.Parent = func;
-		}
+		type.Parent = func;
+		arguments.ForEach(e => e.Parent = func);
+		body.ForEach(e => e.Parent = func);
 
 		node = func;
-
+		
 		return partition;
+	}
+
+	private static List<IToken> GetBodyTokens(List<IToken> tokens)
+	{
+		var openToken = new Token(TokenType.Symbol, "{");
+		var closeToken = new Token(TokenType.Symbol, "}");
+		
+		var openIndex = tokens.FindIndex(e => e.IsSymbol("{"));
+		
+		var closeIndex = (int) tokens.FindСlosingToken(openToken, closeToken, openIndex)!;
+
+		if (closeIndex - openIndex <= 1) return new List<IToken>();
+
+		return tokens.GetRange(openIndex + 1, closeIndex - openIndex - 1);
+	}
+
+	private static List<List<IToken>> GetArgumentsTokens(List<IToken> tokens)
+	{
+		var closeIndex = tokens.FindIndex(e => e.IsSymbol(")"));
+
+		if (closeIndex == 3) return new List<List<IToken>>();
+		
+		return tokens.GetRange(3, closeIndex - 3)
+			.SplitTokens(e => e.IsSymbol(",") || e.IsSymbol(")"));
 	}
 }
