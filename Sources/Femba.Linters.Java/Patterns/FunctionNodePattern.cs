@@ -52,20 +52,17 @@ public sealed class FunctionNodePattern : NodePattern
 
 		var arguments = GetArgumentsTokens(tokens).Select(e =>
 		{
-			var curType = e[0];
-			var curName = e[1];
-
-			return new VariableNodePattern().Part(new[] {curType, curName});
+			return new VariableNodePattern().Part(tokens);
 		}).ToList();
 		
 		var body = new Common.Parser(GetBodyTokens(tokens), Parser!.Patterns.ToList())
 			.ParseToEnd().ToList();
 		
-		// body.ForEach(e =>
-		// {
-		// 	if (e is FunctionNode) throw new ParseLinterException(
-		// 		"Java does not support nested functions.", partition.First());
-		// });
+		body.ForEach(e =>
+		{
+			if (e is FunctionNode) throw new ParseLinterException(
+				"Java does not support nested functions.", partition.First());
+		});
 
 		var func = new FunctionNode((TypeNode) type, name)
 		{

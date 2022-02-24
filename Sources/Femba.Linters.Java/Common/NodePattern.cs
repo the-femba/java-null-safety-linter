@@ -13,6 +13,7 @@ public abstract class NodePattern : INodePattern
 	}
 
 	public Parser? Parser { get; set; }
+	
 
 	public abstract IReadOnlyList<IToken> Part(IReadOnlyList<IToken> partition, out INode node);
 }

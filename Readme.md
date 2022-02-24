@@ -8,6 +8,8 @@ Null safety static analizer (linter) for java language.
 
 # Language Support
 
+## Conditions
+
 ## Functions
 
 Functions outside of class.
