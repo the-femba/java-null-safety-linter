@@ -46,4 +46,16 @@ public class ParserTests
 			new VariableAssignmentNodePattern()
 		}).ParseToEnd();
 	}
+	
+	[Fact]
+	public void Test4()
+	{
+		var node = new Common.Parser("myFun1().myVar1.myVar2", new List<INodePattern>
+		{
+			new FunctionNodePattern(),
+			new FunctionInvokeNodePattern(),
+			new VariableInvokeNodePattern(),
+			new VariableAssignmentNodePattern()
+		}).ParseToEnd();
+	}
 }
