@@ -6,13 +6,13 @@ namespace Femba.Linters.Java.Parser.Nodes;
 
 public sealed class FunctionNode : Node, IDeclarationNode
 {
-	public FunctionNode(TypeNode type, string name)
+	public FunctionNode(TypeNode? type, string name)
 	{
 		Type = type;
 		Name = name;
 	}
 
-	public TypeNode Type { get; }
+	public TypeNode? Type { get; }
 
 	public string Name { get; }
 	

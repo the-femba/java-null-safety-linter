@@ -6,10 +6,9 @@ namespace Femba.Linters.Java.Parser.Nodes;
 
 public sealed class FunctionInvokeNode : Node, IExecutableNode
 {
-	public FunctionInvokeNode(FunctionNode function, IExecutableNode? after)
+	public FunctionInvokeNode(FunctionNode function)
 	{
 		Function = function;
-		After = after;
 	}
 
 	public FunctionNode Function { get; }

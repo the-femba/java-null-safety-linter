@@ -13,12 +13,16 @@ public sealed class VariableInvokeNodePattern : NodePattern
 		var tokens = partition.ToList();
 
 		if (!tokens[0].IsName()) return false;
+		
+		if (tokens.Count < 2) return true;
+		
+		if (!tokens[1].IsSymbol(".")) return false;
 
 		if (tokens.Count < 3) return true;
 		
 		if (tokens[^2].IsSymbol(".") && !tokens[^1].IsName()) return false;
 
-		return !tokens[^2].IsSymbol(";");
+		return !(tokens[^2].IsSymbol(";"));
 	}
 
 	public override IReadOnlyList<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
@@ -38,7 +42,7 @@ public sealed class VariableInvokeNodePattern : NodePattern
 
 			after = new Common.Parser(region, Parser!.Patterns.ToList()).ParseNext();
 			
-			if (after is not VariableInvokeNode) throw new ParseLinterException(
+			if (after is not VariableInvokeNode && after is not FunctionInvokeNode) throw new ParseLinterException(
 				"After dot must call a field or function.", tokens.First());
 		}
 

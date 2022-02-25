@@ -50,11 +50,11 @@ public class ParserTests
 	[Fact]
 	public void Test4()
 	{
-		var node = new Common.Parser("myFun1().myVar1.myVar2", new List<INodePattern>
+		var node = new Common.Parser("myFun1(name1, name2).value.toString();", new List<INodePattern>
 		{
 			new FunctionNodePattern(),
-			new FunctionInvokeNodePattern(),
 			new VariableInvokeNodePattern(),
+			new FunctionInvokeNodePattern(),
 			new VariableAssignmentNodePattern()
 		}).ParseToEnd();
 	}
