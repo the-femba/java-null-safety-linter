@@ -20,7 +20,7 @@ public class AnalizerTests
 			new VariableAssignmentNodePattern()
 		}).ParseToEnd();
 
-		var analizer = new Analyzer(node, new[] {new NullsafeFeature()});
+		var analizer = new Analyzer(node, new[] {new NullSafeFeature()});
 		var results = analizer.Analyze();
 	}
 }
