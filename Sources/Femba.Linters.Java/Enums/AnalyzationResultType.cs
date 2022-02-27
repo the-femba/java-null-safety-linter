@@ -4,4 +4,5 @@ public enum AnalyzationResultType
 {
 	Error,
 	Warning,
+	Hint
 }
