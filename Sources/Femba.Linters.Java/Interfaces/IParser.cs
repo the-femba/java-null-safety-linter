@@ -10,5 +10,5 @@ public interface IParser
 
 	INode? ParseNext();
 	
-	IList<INode> ParseToEnd();
+	INodeScope ParseToEnd();
 }

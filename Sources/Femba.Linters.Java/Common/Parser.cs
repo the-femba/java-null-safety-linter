@@ -82,7 +82,7 @@ public sealed class Parser : IParser
 		return null;
 	}
 
-	public IList<INode> ParseToEnd()
+	public INodeScope ParseToEnd()
 	{
 		var list = new List<INode>();
 
@@ -92,6 +92,6 @@ public sealed class Parser : IParser
 			list.Add(node);
 		}
 
-		return list;
+		return (INodeScope) list;
 	}
 }

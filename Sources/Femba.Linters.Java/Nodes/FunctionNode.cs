@@ -20,5 +20,5 @@ public sealed class FunctionNode : Node, IDeclarationNode
 
 	public IReadOnlyList<VariableNode> Arguments { get; init; } = new List<VariableNode>();
 
-	public IReadOnlyList<INode> Body { get; init; } = new List<INode>();
+	public INodeScope Body { get; init; } = (INodeScope) new List<INode>();
 }

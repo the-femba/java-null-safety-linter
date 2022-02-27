@@ -8,8 +8,4 @@
         <RootNamespace>Femba.Linters.Java.Parser</RootNamespace>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="Features" />
-    </ItemGroup>
-
 </Project>
