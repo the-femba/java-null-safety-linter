@@ -11,7 +11,9 @@ public sealed class BranchNode : Node, IExecutableNode
 		Condition = condition;
 	}
 
-	public ConditionNode Condition { get; }
+	public ConditionNode? Condition { get; }
 
 	public IReadOnlyList<INode> Stick { get; init; } = Array.Empty<INode>();
+
+	public bool IsEnd { get; init;  } = false;
 }
