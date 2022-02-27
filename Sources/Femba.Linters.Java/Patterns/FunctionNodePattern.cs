@@ -52,7 +52,7 @@ public sealed class FunctionNodePattern : NodePattern
 
 		var arguments = GetArgumentsTokens(tokens).Select(e =>
 		{
-			return new VariableNodePattern().Part(tokens);
+			return new VariableNodePattern().Part(e);
 		}).ToList();
 		
 		var body = new Common.Parser(GetBodyTokens(tokens), Parser!.Patterns.ToList())

@@ -62,7 +62,7 @@ public class ParserTests
 	[Fact]
 	public void Test5()
 	{
-		var node = new Common.Parser("void myFun1(name1, name2) { value.toString(null); value.toString(); }", new List<INodePattern>
+		var node = new Common.Parser("void myFun1(int name1, string name2) { value.toString(null); value.toString(); }", new List<INodePattern>
 		{
 			new FunctionNodePattern(),
 			new VariableInvokeNodePattern(),
