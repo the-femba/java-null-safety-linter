@@ -20,7 +20,7 @@ public class NullsafeFeature : IFeature
 		"void"
 	};
 	
-	public IList<IAnalyzationResult> Analize(INodeScope scope)
+	public IList<IAnalyzationResult> Analize(IReadOnlyList<INode> scope)
 	{
 		var results = new List<IAnalyzationResult>();
 		

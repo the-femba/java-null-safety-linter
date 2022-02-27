@@ -4,9 +4,9 @@ namespace Femba.Linters.Java.Parser.Common;
 
 public sealed class Analyzer : IAnalyzer
 {
-	private readonly INodeScope _scope;
+	private readonly IReadOnlyList<INode> _scope;
 
-	public Analyzer(INodeScope scope, IReadOnlyList<IFeature>? features = null)
+	public Analyzer(IReadOnlyList<INode> scope, IReadOnlyList<IFeature>? features = null)
 	{
 		_scope = scope;
 		Features = features ?? new List<IFeature>();

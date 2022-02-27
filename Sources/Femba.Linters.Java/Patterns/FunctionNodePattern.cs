@@ -68,7 +68,7 @@ public sealed class FunctionNodePattern : NodePattern
 		{
 			// FIXME: 
 			Arguments = arguments.Select(e => (VariableNode) e).ToList(),
-			Body = (INodeScope) body,
+			Body = (IReadOnlyList<INode>) body,
 			StartPosition = type.StartPosition,
 			// TODO: Added true end position relative to the closed function basket.
 			EndPosition = tokens.Last().Position

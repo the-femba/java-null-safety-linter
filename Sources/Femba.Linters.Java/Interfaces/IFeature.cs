@@ -2,5 +2,5 @@ namespace Femba.Linters.Java.Parser.Interfaces;
 
 public interface IFeature
 {
-	IList<IAnalyzationResult> Analize(INodeScope scope);
+	IList<IAnalyzationResult> Analize(IReadOnlyList<INode> scope);
 }
