@@ -11,8 +11,9 @@ public class AnalizerTests
 	[Fact]
 	public void Test5()
 	{
-		var node = new Common.Parser("void myFun1(int name1, Point name1) { }", new List<INodePattern>
+		var node = new Common.Parser("void myFun1(int name1, Point name2) { int bebra2 = null; }", new List<INodePattern>
 		{
+			new LiteralNodePattern(),
 			new FunctionNodePattern(),
 			new VariableInvokeNodePattern(),
 			new FunctionInvokeNodePattern(),

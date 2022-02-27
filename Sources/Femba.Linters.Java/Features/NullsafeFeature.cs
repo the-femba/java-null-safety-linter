@@ -55,13 +55,13 @@ public class NullsafeFeature : IFeature
 	private void AnalizeArgument(VariableNode variable,
 		Dictionary<VariableNode, bool> variableDeclarations, List<IAnalyzationResult> results)
 	{
-		if (!variableDeclarations.ContainsKey(variable))
+		if (variableDeclarations.Keys.All(e => e.Name != variable.Name))
 		{
 			variableDeclarations[variable] = IsNull(variable);
 		}
 		else
 		{
-			results.Add(new AnalizationResult("You cannot create the same variable multiple times.",
+			results.Add(new AnalizationResult("You cannot create the same arguments multiple times.",
 				variable.StartPosition, variable.EndPosition));
 		}
 	}
@@ -73,12 +73,10 @@ public class NullsafeFeature : IFeature
 
 		var assignment = variableAssignment.Assignment;	
 		
-		if (variable.Type is not null && 
-		         variableDeclarations.ContainsKey(variable))
+		if (variable.Type is not null && variableDeclarations.Keys.Any(e => e.Name == variable.Name))
 		{
 			results.Add(new AnalizationResult("You cannot create the same variable multiple times.",
 				variableAssignment.StartPosition, variableAssignment.EndPosition));
-			return;
 		}
 
 		if (variable.Type is not null)
@@ -92,13 +90,10 @@ public class NullsafeFeature : IFeature
 		{
 			results.Add(new AnalizationResult("Attempt to assign a value to a variable that has not yet been initialized.",
 				variableAssignment.StartPosition, variableAssignment.EndPosition));
-			return;
 		}
 
 		if (literal.IsNull())
 		{
-			if (variableDeclarations[variable] is not false) return;
-				
 			results.Add(new AnalizationResult("A null literal is assigned to a variable that cannot be null.",
 				variableAssignment.StartPosition, variableAssignment.EndPosition));
 		}

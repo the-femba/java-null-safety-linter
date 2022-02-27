@@ -15,6 +15,7 @@ public sealed class Parser : IParser
 		var tokens = new Lexer(new Formatter().Format(text), patterns: new HashSet<ITokenPattern>
 		{
 			new NumberLiteralPattern(),
+			new NullLiteralTokenPattern(),
 			new StringLiteralTokenPattern(),
 			new CharLiteralTokenPattern(),
 			new KeywordPattern(),

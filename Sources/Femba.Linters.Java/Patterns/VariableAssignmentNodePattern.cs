@@ -17,7 +17,7 @@ public class VariableAssignmentNodePattern : NodePattern
 
 		var leftSide = tokens.Take(eqSymIndex).ToList();
 
-		if (!new VariableNodePattern().IsPart(leftSide)) return false;
+		if (!new VariableNodePattern().IsPart(leftSide) && !(leftSide.Count == 1 && leftSide[0].IsName())) return false;
 		
 		var endSymIndex = tokens.FindIndex(e => e.IsSymbol(";"));
 
@@ -44,10 +44,16 @@ public class VariableAssignmentNodePattern : NodePattern
 
 		var variablePattern = new VariableNodePattern();
 		
-		if (!variablePattern.IsPart(leftSide)) throw new ParseLinterException(
+		if (!variablePattern.IsPart(leftSide) && !(leftSide.Count == 1 && leftSide[0].IsName())) throw new ParseLinterException(
 			"Type and name or variable name are not appropriate for the format, include annotations.", tokens.First());
 
-		var variable = variablePattern.Part(leftSide);
+		var variable = leftSide[0].IsName() 
+			? new VariableNode(null, leftSide[0].Lexeme)
+			{
+				StartPosition = leftSide[0].Position,
+				EndPosition = leftSide[0].Position + leftSide[0].Lexeme.Length
+			}
+			: variablePattern.Part(leftSide);
 	
 		var endRightSideIndex = tokens.Count - eqSymIndex - 2;
 		if (endRightSideIndex < 1) throw new ParseLinterException(
@@ -63,7 +69,12 @@ public class VariableAssignmentNodePattern : NodePattern
 		if (assignment is FunctionNode) throw new ParseLinterException(
 			"You can't assign a function declaration to a variable.", tokens[eqSymIndex + 1]);
 
-		var eqNode = new VariableAssignmentNode((VariableNode) variable, assignment);
+		var eqNode = new VariableAssignmentNode((VariableNode) variable, assignment)
+		{
+			StartPosition = variable.StartPosition,
+			EndPosition = assignment.EndPosition
+		};
+		
 		variable.Parent = eqNode;
 		assignment.Parent = eqNode;
 
