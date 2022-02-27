@@ -4,7 +4,7 @@ using Femba.Linters.Java.Parser.Nodes;
 
 namespace Femba.Linters.Java.Parser.Features;
 
-public class NullsafeFeature : IFeature
+public class NullSafeFeature : IFeature
 {
 	private List<string> _primitiveTypes = new()
 	{
