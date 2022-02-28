@@ -12,6 +12,8 @@ public class VariableAssignmentNodePattern : NodePattern
 	{
 		var tokens = partition.ToList();
 		var eqSymIndex = tokens.FindIndex(e => e.IsSymbol("="));
+		
+		if (tokens.Any(e => e.IsSymbol("(")) && eqSymIndex < 0) return false;
 
 		if (eqSymIndex < 0) eqSymIndex = tokens.Count - 1;
 
