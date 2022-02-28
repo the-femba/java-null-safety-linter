@@ -148,8 +148,7 @@ public sealed class NullSafeFeature : IFeature
 		FunctionNode current, FunctionsScope scope, List<IAnalyzationResult> results)
 	{
 		var variable = variableAssignment.Variable;
-
-		var assignment = variableAssignment.Assignment;	
+		var assignment = variableAssignment.Assignment;
 		
 		if (variable.Type is not null && scope[current].Keys.Any(e => e.Name == variable.Name))
 		{
@@ -162,21 +161,94 @@ public sealed class NullSafeFeature : IFeature
 			scope[current][variable] = IsNull(variable);
 		}
 
-		if (assignment is not LiteralNode literal) return;
-		
 		if (scope[current].All(e => e.Key.Name != variable.Name))
 		{
 			results.Add(new AnalizationResult("Attempt to assign a value to a variable that has not yet been initialized.",
 				variableAssignment.StartPosition, variableAssignment.EndPosition));
 		}
 
-		if (literal.IsNull())
+		if (assignment is LiteralNode literal && literal.IsNull() && 
+		    scope[current].Any(e => e.Key.Name == variable.Name))
 		{
-			results.Add(new AnalizationResult("A null literal is assigned to a variable that cannot be null.",
-				variableAssignment.StartPosition, variableAssignment.EndPosition)
+			var (scopeVariable, isNull) = scope[current].FirstOrDefault(e => e.Key.Name == variable.Name);
+
+			if (!isNull)
 			{
-				Type = AnalyzationResultType.Warning
-			});
+				results.Add(new AnalizationResult("A null literal is assigned to a variable that cannot be null.",
+					variableAssignment.StartPosition, variableAssignment.EndPosition)
+				{
+					Type = AnalyzationResultType.Warning
+				});
+			}
+		}
+		else if (assignment is VariableInvokeNode variableInvoke && 
+		         scope[current].Any(e => e.Key.Name == variable.Name))
+		{
+			var (scopeVariable, isNull) = scope[current].FirstOrDefault(e => e.Key.Name == variable.Name);
+
+			if (scope[current].Any(e => e.Key.Name == variableInvoke.Variable.Name))
+			{
+				var (scopeAssignment, isAssignmentNull) = scope[current].FirstOrDefault(e => e.Key.Name == variableInvoke.Variable.Name);
+			
+				if (!isNull && isAssignmentNull)
+				{
+					results.Add(new AnalizationResult("A null literal is assigned to a variable that cannot be null.",
+						variableAssignment.StartPosition, variableAssignment.EndPosition)
+					{
+						Type = AnalyzationResultType.Warning
+					});
+				}
+
+				if (isAssignmentNull && variableInvoke.After is not null)
+				{
+					results.Add(new AnalizationResult("You cannot call fields on a variable that is null.",
+						variableAssignment.StartPosition, variableAssignment.EndPosition)
+					{
+						Type = AnalyzationResultType.Warning
+					});
+				}
+			}
+		}
+		else if (assignment is FunctionInvokeNode functionInvoke && 
+		         scope[current].Any(e => e.Key.Name == variable.Name))
+		{
+			var (scopeVariable, isNull) = scope[current].FirstOrDefault(e => e.Key.Name == variable.Name);
+			var function = scope.Keys.FirstOrDefault(e => e.Name == functionInvoke.Function.Name);
+			if (!isNull)
+			{
+				bool isNullFunction = true;
+				if (function != null)
+				{
+					isNullFunction = IsNull(function.Type!, function.Annotations.ToList());
+				}
+				if (isNullFunction)
+				{
+					results.Add(new AnalizationResult("A function can return null when the variable to which it is assigned is not null.",
+						functionInvoke.StartPosition, functionInvoke.EndPosition)
+					{
+						Type = AnalyzationResultType.Warning
+					});
+				}
+			}
+
+			if (functionInvoke.After != null)
+			{
+				bool isNullFunction = true;
+				if (function != null)
+				{
+					isNullFunction = IsNull(function.Type!, function.Annotations.ToList());
+				}
+
+				if (isNullFunction)
+				{
+					results.Add(new AnalizationResult("A function can null and has after.",
+						functionInvoke.StartPosition, functionInvoke.EndPosition)
+					{
+						Type = AnalyzationResultType.Warning
+					});
+				}
+				
+			}
 		}
 	}
 
@@ -193,6 +265,22 @@ public sealed class NullSafeFeature : IFeature
 			}
 		}
 		
-		return !_primitiveTypes.Contains(variable.Name);
+		return !_primitiveTypes.Contains(variable.Type?.Name ?? "");
+	}
+	
+	private bool IsNull(TypeNode type, List<AnnotationNode> annotationNodes)
+	{
+		foreach (var annotation in annotationNodes)
+		{
+			switch (annotation.Type.Name)
+			{
+				case "NotNull":
+					return false;
+				case "Nullable":
+					return true;
+			}
+		}
+		
+		return !_primitiveTypes.Contains(type.Name ?? "");
 	}
 }

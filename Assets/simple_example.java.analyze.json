@@ -4,5 +4,41 @@
     "EndPosition": 41,
     "Message": "A null literal is assigned to a variable that cannot be null.",
     "Type": 1
+  },
+  {
+    "StartPosition": 53,
+    "EndPosition": 58,
+    "Message": "Attempt to assign a value to a variable that has not yet been initialized.",
+    "Type": 0
+  },
+  {
+    "StartPosition": 85,
+    "EndPosition": 93,
+    "Message": "A null literal is assigned to a variable that cannot be null.",
+    "Type": 1
+  },
+  {
+    "StartPosition": 130,
+    "EndPosition": 138,
+    "Message": "A null literal is assigned to a variable that cannot be null.",
+    "Type": 1
+  },
+  {
+    "StartPosition": 70,
+    "EndPosition": 75,
+    "Message": "The type of the value passed to the function do not match the type of the function argument",
+    "Type": 0
+  },
+  {
+    "StartPosition": 114,
+    "EndPosition": 120,
+    "Message": "The type of the value passed to the function do not match the type of the function argument",
+    "Type": 0
+  },
+  {
+    "StartPosition": 178,
+    "EndPosition": 206,
+    "Message": "The function is not available in the current scope. All default arguments can be null and cannot parse the number of arguments.",
+    "Type": 2
   }
 ]

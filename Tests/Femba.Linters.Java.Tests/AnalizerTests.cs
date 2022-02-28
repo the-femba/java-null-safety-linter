@@ -28,7 +28,7 @@ public class AnalizerTests
 	[Fact]
 	public void Test1()
 	{
-		var node = new Common.Parser("void main(int number) { number = null; my1(number);} void my1(int number) { }", new List<INodePattern>
+		var node = new Common.Parser("void myFun1() { @Nullable int a = 3; int b = myFun2().value; } Point myFun2() { }", new List<INodePattern>
 		{
 			new LiteralNodePattern(),
 			new FunctionNodePattern(),

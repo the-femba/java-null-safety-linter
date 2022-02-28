@@ -9,11 +9,19 @@ public sealed class VariableNodePattern : NodePattern
 {
 	public override bool IsPart(IReadOnlyList<IToken> partition)
 	{
+		if (partition.Count == 0) return true;
+		
 		// TODO: Add Attribute support.
+		if (partition.Count == 1 && partition[0].IsSymbol("@")) return true;
 		if (partition.Count == 1 && partition[0].IsType()) return true;
-		if (partition.Count == 2 && partition[0].IsType() && partition[1].IsName()) return true;
-		if (partition.Count == 3 && partition[0].IsType() && partition[1].IsName() &&
-		    !(partition[2].IsSymbol() && partition[2].Lexeme == "(")) return true;
+
+		if (partition.Count == 1) return true;
+
+		if (partition[^1].IsSymbol("(")) return false;
+
+		if (partition[0].IsSymbol("@") && partition[1].IsType()) return true;
+		if (partition[0].IsType() && partition[1].IsName()) return true;
+		
 		return false;
 	}
 

@@ -62,12 +62,13 @@ public class ParserTests
 	[Fact]
 	public void Test5()
 	{
-		var node = new Common.Parser("void myFun1(int name1, string name2) { value = null; }", new List<INodePattern>
+		var node = new Common.Parser(@"int a = null;", new List<INodePattern>
 		{
+			new LiteralNodePattern(),
 			new FunctionNodePattern(),
-			new VariableAssignmentNodePattern(),
 			new VariableInvokeNodePattern(),
-			new FunctionInvokeNodePattern()
+			new FunctionInvokeNodePattern(),
+			new VariableAssignmentNodePattern()
 		}).ParseToEnd();
 	}
 }
