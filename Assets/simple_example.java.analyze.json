@@ -1,0 +1,8 @@
+[
+  {
+    "StartPosition": 33,
+    "EndPosition": 41,
+    "Message": "A null literal is assigned to a variable that cannot be null.",
+    "Type": 1
+  }
+]
