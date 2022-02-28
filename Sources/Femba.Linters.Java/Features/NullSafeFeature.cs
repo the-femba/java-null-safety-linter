@@ -1,10 +1,13 @@
+using Femba.Linters.Java.Parser.Enums;
 using Femba.Linters.Java.Parser.Interfaces;
 using Femba.Linters.Java.Parser.Models;
 using Femba.Linters.Java.Parser.Nodes;
+using Femba.Linters.Java.Parser.Patterns;
+using FunctionsScope = System.Collections.Generic.Dictionary<Femba.Linters.Java.Parser.Nodes.FunctionNode, System.Collections.Generic.Dictionary<Femba.Linters.Java.Parser.Nodes.VariableNode, bool>>;
 
 namespace Femba.Linters.Java.Parser.Features;
 
-public class NullSafeFeature : IFeature
+public sealed class NullSafeFeature : IFeature
 {
 	private List<string> _primitiveTypes = new()
 	{
@@ -20,44 +23,119 @@ public class NullSafeFeature : IFeature
 		"void"
 	};
 	
-	public IList<IAnalyzationResult> Analize(IReadOnlyList<INode> scope)
+	public IList<IAnalyzationResult> Analyze(IReadOnlyList<INode> scope)
 	{
 		var results = new List<IAnalyzationResult>();
 		
-		var functions = scope.Select(e => (FunctionNode) e).ToList();
-
-		foreach (var function in functions)
+		var functionsScope = new FunctionsScope();
+		
+		foreach (var node in scope)
 		{
-			AnalizeFunction(function, functions, results);
+			var function = (FunctionNode) node;
+			
+			if (functionsScope.Keys.Any(e => e.Name == function.Name))
+			{
+				results.Add(new AnalizationResult("There is already a function with the same name.",
+					function.StartPosition, function.EndPosition));
+			}
+			
+			functionsScope[function] = new Dictionary<VariableNode, bool>();
+			
+			foreach (var argument in function.Arguments)
+			{
+				AnalyzeArgument(argument, function, functionsScope, results);
+			}
+		}
+		
+		foreach (var node in scope)
+		{
+			var function = (FunctionNode) node;
+			
+			AnalyzeBody(function, functionsScope, results);
 		}
 
 		return results;
 	}
 
-	private void AnalizeFunction(FunctionNode function, List<FunctionNode> functions, List<IAnalyzationResult> results)
+	private void AnalyzeBody(FunctionNode function, FunctionsScope scope, List<IAnalyzationResult> results)
 	{
-		var variableDeclarations = new Dictionary<VariableNode, bool>();
-		
-		foreach (var argument in function.Arguments)
-		{
-			AnalizeArgument(argument, variableDeclarations, results);
-		}
-		
 		foreach (var node in function.Body)
 		{
-			if (node is VariableAssignmentNode variableAssignment)
+			switch (node)
 			{
-				AnalizeVariable(variableAssignment, variableDeclarations, results);
+				case VariableAssignmentNode variableAssignment:
+					AnalyzeVariable(variableAssignment, function, scope, results);
+					break;
+				case FunctionInvokeNode functionInvoke:
+					AnalyzeFunction(functionInvoke, function, scope, results);
+					break;
 			}
 		}
 	}
 
-	private void AnalizeArgument(VariableNode variable,
-		Dictionary<VariableNode, bool> variableDeclarations, List<IAnalyzationResult> results)
+	private void AnalyzeFunction(FunctionInvokeNode function, FunctionNode current, FunctionsScope scope,
+		List<IAnalyzationResult> results)
 	{
-		if (variableDeclarations.Keys.All(e => e.Name != variable.Name))
+		if (scope.Keys.All(e => e.Name != function.Function.Name))
 		{
-			variableDeclarations[variable] = IsNull(variable);
+			results.Add(new AnalizationResult("The function is not available in the current scope. " +
+			                                  "All default arguments can be null and cannot parse the number of arguments.",
+				function.StartPosition, function.EndPosition)
+			{
+				Type = AnalyzationResultType.Hint,
+			});
+		}
+		else
+		{
+			if (function.Values.Count != current.Arguments.Count)
+			{
+				results.Add(new AnalizationResult("The number of arguments passed to the function does not match the number of arguments received",
+					function.StartPosition, function.EndPosition));
+				return;
+			}
+
+			for (int index = 0; index < current.Arguments.Count; index++)
+			{
+				var argument = current.Arguments[index];
+				if (function.Values[index] is not VariableInvokeNode variableInvoke) continue;
+				var valueInvoke = (VariableInvokeNode) function.Values[index];
+				
+				if (scope[current].All(e => e.Key.Name != variableInvoke.Variable.Name))
+				{
+					results.Add(new AnalizationResult("Can't find variable in current scope.",
+						valueInvoke.StartPosition, valueInvoke.EndPosition));
+					continue;
+				}
+				
+				var (value, isNull) = scope[current]
+					.First(e => e.Key.Name == variableInvoke.Variable.Name);
+				
+				if (value.Type?.Name != argument.Type?.Name)
+				{
+					results.Add(new AnalizationResult("The type of the value passed to the " +
+					                                  "function do not match the type of the function argument",
+						value.StartPosition, value.EndPosition));
+					continue;
+				}
+				
+				if (isNull && !IsNull(argument))
+				{
+					results.Add(new AnalizationResult("Cannot pass null to a function where the argument is not null.",
+						value.StartPosition, value.EndPosition)
+					{
+						Type = AnalyzationResultType.Warning
+					});
+				}
+			}
+		}
+	}
+
+	private void AnalyzeArgument(VariableNode variable, FunctionNode current, FunctionsScope scope,
+		List<IAnalyzationResult> results)
+	{
+		if (scope[current].Keys.All(e => e.Name != variable.Name))
+		{
+			scope[current][variable] = IsNull(variable);
 		}
 		else
 		{
@@ -66,14 +144,14 @@ public class NullSafeFeature : IFeature
 		}
 	}
 
-	private void AnalizeVariable(VariableAssignmentNode variableAssignment, 
-		Dictionary<VariableNode, bool> variableDeclarations, List<IAnalyzationResult> results)
+	private void AnalyzeVariable(VariableAssignmentNode variableAssignment, 
+		FunctionNode current, FunctionsScope scope, List<IAnalyzationResult> results)
 	{
 		var variable = variableAssignment.Variable;
 
 		var assignment = variableAssignment.Assignment;	
 		
-		if (variable.Type is not null && variableDeclarations.Keys.Any(e => e.Name == variable.Name))
+		if (variable.Type is not null && scope[current].Keys.Any(e => e.Name == variable.Name))
 		{
 			results.Add(new AnalizationResult("You cannot create the same variable multiple times.",
 				variableAssignment.StartPosition, variableAssignment.EndPosition));
@@ -81,12 +159,12 @@ public class NullSafeFeature : IFeature
 
 		if (variable.Type is not null)
 		{
-			variableDeclarations[variable] = IsNull(variable);
+			scope[current][variable] = IsNull(variable);
 		}
 
 		if (assignment is not LiteralNode literal) return;
 		
-		if (!variableDeclarations.ContainsKey(variable))
+		if (scope[current].All(e => e.Key.Name != variable.Name))
 		{
 			results.Add(new AnalizationResult("Attempt to assign a value to a variable that has not yet been initialized.",
 				variableAssignment.StartPosition, variableAssignment.EndPosition));
@@ -95,7 +173,10 @@ public class NullSafeFeature : IFeature
 		if (literal.IsNull())
 		{
 			results.Add(new AnalizationResult("A null literal is assigned to a variable that cannot be null.",
-				variableAssignment.StartPosition, variableAssignment.EndPosition));
+				variableAssignment.StartPosition, variableAssignment.EndPosition)
+			{
+				Type = AnalyzationResultType.Warning
+			});
 		}
 	}
 

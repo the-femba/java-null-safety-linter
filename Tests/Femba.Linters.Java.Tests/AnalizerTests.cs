@@ -11,7 +11,24 @@ public class AnalizerTests
 	[Fact]
 	public void Test5()
 	{
+		
 		var node = new Common.Parser("void myFun1(int name1, Point name2) { int bebra2 = null; }", new List<INodePattern>
+		{
+			new LiteralNodePattern(),
+			new FunctionNodePattern(),
+			new VariableInvokeNodePattern(),
+			new FunctionInvokeNodePattern(),
+			new VariableAssignmentNodePattern()
+		}).ParseToEnd();
+
+		var analizer = new Analyzer(node, new[] {new NullSafeFeature()});
+		var results = analizer.Analyze();
+	}
+	
+	[Fact]
+	public void Test1()
+	{
+		var node = new Common.Parser("void main(int number) { number = null; my1(number);} void my1(int number) { }", new List<INodePattern>
 		{
 			new LiteralNodePattern(),
 			new FunctionNodePattern(),

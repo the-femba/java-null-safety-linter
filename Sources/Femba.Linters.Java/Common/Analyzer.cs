@@ -17,7 +17,7 @@ public sealed class Analyzer : IAnalyzer
 	public IList<IAnalyzationResult> Analyze()
 	{
 		var list = new List<IAnalyzationResult>();
-		foreach (var feature in Features) list.AddRange(feature.Analize(_scope));
+		foreach (var feature in Features) list.AddRange(feature.Analyze(_scope));
 		return list;
 	}
 }
