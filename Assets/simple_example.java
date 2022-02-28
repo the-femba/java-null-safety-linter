@@ -14,7 +14,7 @@ void bar(@NotNull Point p) {
     funcNotExists(notExistsVar); // hint
     
     Point point = null;
-    setpoint(point);
+    setpoint(point); // error Point not null
 }
 
 void func(@NotNull Point p) { }
