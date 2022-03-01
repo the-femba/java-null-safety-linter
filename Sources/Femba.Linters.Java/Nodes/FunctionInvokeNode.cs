@@ -13,7 +13,7 @@ public sealed class FunctionInvokeNode : Node, IExecutableNode
 
 	public FunctionNode Function { get; }
 	
-	public IReadOnlyList<INode> Values { get; init; } = Array.Empty<INode>();
+	public IReadOnlyList<INode> Values { get; init; } = new List<INode>();
 	
 	public IExecutableNode? After { get; init; }
 }

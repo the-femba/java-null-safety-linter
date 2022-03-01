@@ -6,14 +6,14 @@ namespace Femba.Linters.Java.Parser.Nodes;
 
 public sealed class BranchNode : Node, IExecutableNode
 {
-	public BranchNode(ConditionNode condition)
+	public BranchNode(ConditionNode? condition)
 	{
 		Condition = condition;
 	}
 
 	public ConditionNode? Condition { get; }
 
-	public IReadOnlyList<INode> Stick { get; init; } = Array.Empty<INode>();
+	public IReadOnlyList<INode> Body { get; init; } = new List<INode>();
 
 	public bool IsEnd { get; init;  } = false;
 }

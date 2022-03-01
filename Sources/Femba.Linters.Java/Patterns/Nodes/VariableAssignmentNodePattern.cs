@@ -3,8 +3,9 @@ using Femba.Linters.Java.Parser.Exceptions;
 using Femba.Linters.Java.Parser.Extensions;
 using Femba.Linters.Java.Parser.Interfaces;
 using Femba.Linters.Java.Parser.Nodes;
+using Femba.Linters.Java.Parser.Utils;
 
-namespace Femba.Linters.Java.Parser.Patterns;
+namespace Femba.Linters.Java.Parser.Patterns.Nodes;
 
 public class VariableAssignmentNodePattern : NodePattern
 {
@@ -13,7 +14,7 @@ public class VariableAssignmentNodePattern : NodePattern
 		var tokens = partition.ToList();
 		var eqSymIndex = tokens.FindIndex(e => e.IsSymbol("="));
 		
-		if (tokens.Any(e => e.IsSymbol("(")) && eqSymIndex < 0) return false;
+		if (tokens.Any(e => e.IsSymbol(TokensNames.ArgumentOpenBasket)) && eqSymIndex < 0) return false;
 
 		if (eqSymIndex < 0) eqSymIndex = tokens.Count - 1;
 
@@ -21,7 +22,7 @@ public class VariableAssignmentNodePattern : NodePattern
 
 		if (!new VariableNodePattern().IsPart(leftSide) && !(leftSide.Count == 1 && leftSide[0].IsName())) return false;
 		
-		var endSymIndex = tokens.FindIndex(e => e.IsSymbol(";"));
+		var endSymIndex = tokens.FindIndex(e => e.IsSymbol(TokensNames.Semicolon));
 
 		if (endSymIndex < 0) return true;
 
@@ -30,11 +31,11 @@ public class VariableAssignmentNodePattern : NodePattern
 		return endSymIndex == tokens.Count - 1;
 	}
 
-	public override IReadOnlyList<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
+	public override List<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
 	{
 		var tokens = partition.ToList();
 
-		if (!tokens.Last().IsSymbol(";")) throw new ParseLinterException(
+		if (!tokens.Last().IsSymbol(TokensNames.Semicolon)) throw new ParseLinterException(
 			"Variable creation must end with a semicolon.", tokens.Last());
 		
 		var eqSymIndex = tokens.FindIndex(e => e.IsSymbol("="));
@@ -63,7 +64,7 @@ public class VariableAssignmentNodePattern : NodePattern
 		
 		var rightSide = tokens.GetRange(eqSymIndex + 1, endRightSideIndex);
 
-		var assignment = new Common.Parser(rightSide, patterns: Parser!.Patterns.ToList()).ParseToEnd().FirstOrDefault();
+		var assignment = new Common.Parser(rightSide){Patterns = Parser!.Patterns}.ParseToEnd().FirstOrDefault();
 		
 		if (assignment is null) throw new ParseLinterException(
 			"While parsing an assignment, the assigned could not be parsed.", tokens[eqSymIndex + 1]);
@@ -82,6 +83,6 @@ public class VariableAssignmentNodePattern : NodePattern
 
 		node = eqNode;
 
-		return partition;
+		return partition.ToList();
 	}
 }

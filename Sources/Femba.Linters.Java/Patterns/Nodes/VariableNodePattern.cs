@@ -2,8 +2,9 @@ using Femba.Linters.Java.Parser.Common;
 using Femba.Linters.Java.Parser.Extensions;
 using Femba.Linters.Java.Parser.Interfaces;
 using Femba.Linters.Java.Parser.Nodes;
+using Femba.Linters.Java.Parser.Utils;
 
-namespace Femba.Linters.Java.Parser.Patterns;
+namespace Femba.Linters.Java.Parser.Patterns.Nodes;
 
 public sealed class VariableNodePattern : NodePattern
 {
@@ -12,20 +13,20 @@ public sealed class VariableNodePattern : NodePattern
 		if (partition.Count == 0) return true;
 		
 		// TODO: Add Attribute support.
-		if (partition.Count == 1 && partition[0].IsSymbol("@")) return true;
+		if (partition.Count == 1 && partition[0].IsSymbol(TokensNames.Dog)) return true;
 		if (partition.Count == 1 && partition[0].IsType()) return true;
 
 		if (partition.Count == 1) return true;
 
-		if (partition[^1].IsSymbol("(")) return false;
+		if (partition[^1].IsSymbol(TokensNames.ArgumentOpenBasket)) return false;
 
-		if (partition[0].IsSymbol("@") && partition[1].IsType()) return true;
+		if (partition[0].IsSymbol(TokensNames.Dog) && partition[1].IsType()) return true;
 		if (partition[0].IsType() && partition[1].IsName()) return true;
 		
 		return false;
 	}
 
-	public override IReadOnlyList<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
+	public override List<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
 	{
 		var tokens = partition.ToList();
 		
@@ -69,6 +70,6 @@ public sealed class VariableNodePattern : NodePattern
 
 		node = variable;
 
-		return partition;
+		return partition.ToList();
 	}
 }

@@ -1,4 +1,3 @@
-using System.Linq;
 using Femba.Linters.Java.Parser.Common;
 using Femba.Linters.Java.Parser.Enums;
 using Femba.Linters.Java.Parser.Exceptions;
@@ -6,8 +5,9 @@ using Femba.Linters.Java.Parser.Extensions;
 using Femba.Linters.Java.Parser.Interfaces;
 using Femba.Linters.Java.Parser.Models;
 using Femba.Linters.Java.Parser.Nodes;
+using Femba.Linters.Java.Parser.Utils;
 
-namespace Femba.Linters.Java.Parser.Patterns;
+namespace Femba.Linters.Java.Parser.Patterns.Nodes;
 
 public sealed class FunctionNodePattern : NodePattern
 {
@@ -19,20 +19,20 @@ public sealed class FunctionNodePattern : NodePattern
 			return tokens[0].IsType();
 		if (tokens.Count == 2)
 			return tokens[0].IsType() && tokens[1].IsName();
-		if (!tokens[0].IsType() || !tokens[1].IsName() || !tokens[2].IsSymbol("(")) return false;
+		if (!tokens[0].IsType() || !tokens[1].IsName() || !tokens[2].IsSymbol(TokensNames.ArgumentOpenBasket)) return false;
 
 		if (tokens.Count == 4) return true;
 
-		var closeArgBasket = tokens.FindIndex(e => e.IsSymbol(")"));
+		var closeArgBasket = tokens.FindIndex(e => e.IsSymbol(TokensNames.ArgumentCloseBasket));
 		
 		if (closeArgBasket < 0) return true;
 
-		var openBodyBasket = tokens.FindIndex(e => e.IsSymbol("{"));
+		var openBodyBasket = tokens.FindIndex(e => e.IsSymbol(TokensNames.BodyOpenBasket));
 
 		if (openBodyBasket < 0) return true;
 		
-		var openToken = new Token(TokenType.Symbol, "{");
-		var closeToken = new Token(TokenType.Symbol, "}");
+		var openToken = new Token(TokenType.Symbol, TokensNames.BodyOpenBasket);
+		var closeToken = new Token(TokenType.Symbol, TokensNames.BodyCloseBasket);
 
 		var closedBodyToken = tokens.FindСlosingToken(openToken, closeToken, openBodyBasket);
 
@@ -42,7 +42,7 @@ public sealed class FunctionNodePattern : NodePattern
 		return r;
 	}
 
-	public override IReadOnlyList<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
+	public override List<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
 	{
 		var tokens = partition.ToList();
 		
@@ -50,12 +50,10 @@ public sealed class FunctionNodePattern : NodePattern
 		
 		var name = tokens[1].Lexeme;
 
-		var arguments = GetArgumentsTokens(tokens).Select(e =>
-		{
-			return new VariableNodePattern().Part(e);
-		}).ToList();
+		var arguments = GetArgumentsTokens(tokens).Select(e => 
+			new VariableNodePattern().Part(e)).ToList();
 		
-		var body = new Common.Parser(GetBodyTokens(tokens), Parser!.Patterns.ToList())
+		var body = new Common.Parser(GetBodyTokens(tokens)){Patterns = Parser!.Patterns}
 			.ParseToEnd().ToList();
 		
 		body.ForEach(e =>
@@ -80,15 +78,15 @@ public sealed class FunctionNodePattern : NodePattern
 
 		node = func;
 		
-		return partition;
+		return partition.ToList();
 	}
 
 	private static List<IToken> GetBodyTokens(List<IToken> tokens)
 	{
-		var openToken = new Token(TokenType.Symbol, "{");
-		var closeToken = new Token(TokenType.Symbol, "}");
+		var openToken = new Token(TokenType.Symbol, TokensNames.BodyOpenBasket);
+		var closeToken = new Token(TokenType.Symbol, TokensNames.BodyCloseBasket);
 		
-		var openIndex = tokens.FindIndex(e => e.IsSymbol("{"));
+		var openIndex = tokens.FindIndex(e => e.IsSymbol(TokensNames.BodyOpenBasket));
 		
 		var closeIndex = (int) tokens.FindСlosingToken(openToken, closeToken, openIndex)!;
 
@@ -99,11 +97,11 @@ public sealed class FunctionNodePattern : NodePattern
 
 	private static List<List<IToken>> GetArgumentsTokens(List<IToken> tokens)
 	{
-		var closeIndex = tokens.FindIndex(e => e.IsSymbol(")"));
+		var closeIndex = tokens.FindIndex(e => e.IsSymbol(TokensNames.ArgumentCloseBasket));
 
 		if (closeIndex == 3) return new List<List<IToken>>();
 		
 		return tokens.GetRange(3, closeIndex - 3)
-			.SplitTokens(e => e.IsSymbol(",") || e.IsSymbol(")"));
+			.SplitTokens(e => e.IsSymbol(TokensNames.Comma) || e.IsSymbol(TokensNames.ArgumentCloseBasket));
 	}
 }

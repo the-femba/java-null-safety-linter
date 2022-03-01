@@ -2,10 +2,10 @@ using Femba.Linters.Java.Parser.Common;
 using Femba.Linters.Java.Parser.Exceptions;
 using Femba.Linters.Java.Parser.Extensions;
 using Femba.Linters.Java.Parser.Interfaces;
-using Femba.Linters.Java.Parser.Models;
 using Femba.Linters.Java.Parser.Nodes;
+using Femba.Linters.Java.Parser.Utils;
 
-namespace Femba.Linters.Java.Parser.Patterns;
+namespace Femba.Linters.Java.Parser.Patterns.Nodes;
 
 public sealed class FunctionInvokeNodePattern : NodePattern
 {
@@ -17,25 +17,23 @@ public sealed class FunctionInvokeNodePattern : NodePattern
 		
 		if (tokens.Count < 2) return true;
 		
-		if (!tokens[1].IsSymbol("(")) return false;
+		if (!tokens[1].IsSymbol(TokensNames.ArgumentOpenBasket)) return false;
 
 		if (tokens.Count < 3) return true;
 		
 		if (tokens[^2].IsSymbol(".") && !tokens[^1].IsName()) return false;
 
-		return !(tokens[^2].IsSymbol(";"));
+		return !(tokens[^2].IsSymbol(TokensNames.Semicolon));
 	}
 
-	public override IReadOnlyList<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
+	public override List<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
 	{
 		var tokens = partition.ToList();
 		
 		var name = tokens[0].Lexeme;
 
-		var values = GetArgumentsTokens(tokens).Select(e =>
-		{
-			return new Common.Parser(e, Parser!.Patterns.ToList()).ParseNext()!;
-		}).ToList();
+		var values = GetArgumentsTokens(tokens).Select(e => 
+			new Common.Parser(e){Patterns = Parser!.Patterns}.ParseNext()!).ToList();
 
 		var func = new FunctionNode(null, name);
 		
@@ -46,7 +44,7 @@ public sealed class FunctionInvokeNodePattern : NodePattern
 		{
 			var region = tokens.GetRange(dotSymbolIndex + 1, tokens.Count - dotSymbolIndex - 1);
 
-			after = new Common.Parser(region, Parser!.Patterns.ToList()).ParseNext();
+			after = new Common.Parser(region){Patterns = Parser!.Patterns}.ParseNext();
 			
 			if (after is not VariableInvokeNode && after is not FunctionInvokeNode) throw new ParseLinterException(
 				"After dot must call a field or function.", tokens.First());
@@ -71,15 +69,15 @@ public sealed class FunctionInvokeNodePattern : NodePattern
 
 		node = funcInvoke;
 
-		return partition;
+		return partition.ToList();
 	}
 	
 	private static List<List<IToken>> GetArgumentsTokens(List<IToken> tokens)
 	{
-		var closeIndex = tokens.FindIndex(e => e.IsSymbol(")"));
+		var closeIndex = tokens.FindIndex(e => e.IsSymbol(TokensNames.ArgumentCloseBasket));
 
 		if (closeIndex == 2) return new List<List<IToken>>();
 		tokens = tokens.GetRange(2, closeIndex - 2);
-		return tokens.SplitTokens(e => e.IsSymbol(",") || e.IsSymbol(")"));
+		return tokens.SplitTokens(e => e.IsSymbol(TokensNames.Comma) || e.IsSymbol(TokensNames.ArgumentCloseBasket));
 	}
 }

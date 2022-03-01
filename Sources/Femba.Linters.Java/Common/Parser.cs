@@ -1,44 +1,33 @@
 using Femba.Linters.Java.Parser.Interfaces;
 using Femba.Linters.Java.Parser.Patterns;
+using Femba.Linters.Java.Parser.Patterns.Tokens;
 
 namespace Femba.Linters.Java.Parser.Common;
 
 public sealed class Parser : IParser
 {
 	private int _currentPosition = 0;
-	
-	public Parser(string text, List<INodePattern> patterns)
-	{
-		Patterns = patterns;
-		foreach (var pattern in patterns) pattern.Parser = this;
-		
-		var tokens = new Lexer(new Formatter().Format(text), patterns: new HashSet<ITokenPattern>
-		{
-			new NumberLiteralPattern(),
-			new NullLiteralTokenPattern(),
-			new StringLiteralTokenPattern(),
-			new CharLiteralTokenPattern(),
-			new KeywordPattern(),
-			new NamePattern(),
-			new SymbolPattern(),
-			new TypePattern()
-		}).LexToEnd();
-		
-		Tokens = tokens.ToList();
-	}
 
-	public Parser(List<IToken> tokens, List<INodePattern> patterns)
+	private readonly List<INodePattern> _patterns = new List<INodePattern>();
+	
+	public Parser(List<IToken> tokens)
 	{
 		Tokens = tokens.ToList();
-		Patterns = patterns;
-		foreach (var pattern in patterns) pattern.Parser = this;
 	}
 
 	public IReadOnlyList<IToken> Tokens { get; }
 
 	public IReadOnlyList<INode> Nodes { get; } = new List<INode>();
 
-	public IReadOnlyList<INodePattern> Patterns { get; }
+	public IReadOnlyList<INodePattern> Patterns
+	{
+		get => _patterns;
+		init
+		{
+			_patterns = value.ToList();
+			foreach (var pattern in _patterns) pattern.Parser = this;
+		}
+	}
 
 	public INode? ParseNext()
 	{

@@ -9,7 +9,7 @@ public class TokenRegexPattern : TokenPattern
 {
 	protected Regex Regex { get; }
 
-	public TokenRegexPattern(TokenType type, Regex regex) : base(type)
+	protected TokenRegexPattern(TokenType type, Regex regex) : base(type)
 	{
 		Regex = regex;
 	}

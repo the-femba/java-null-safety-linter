@@ -9,7 +9,7 @@ namespace Femba.Linters.Java.Parser.Features;
 
 public sealed class NullSafeFeature : IFeature
 {
-	private List<string> _primitiveTypes = new()
+	private readonly List<string> _primitiveTypes = new()
 	{
 		"byte",
 		"char",

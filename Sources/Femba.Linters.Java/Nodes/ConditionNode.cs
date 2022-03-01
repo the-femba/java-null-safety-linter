@@ -6,5 +6,5 @@ namespace Femba.Linters.Java.Parser.Nodes;
 
 public sealed class ConditionNode : Node, IDeclarationNode
 {
-	
+	public IReadOnlyList<IToken> Values { get; init; } = new List<IToken>();
 }

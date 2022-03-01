@@ -1,10 +1,9 @@
 using System.Text.RegularExpressions;
 using Femba.Linters.Java.Parser.Common;
 using Femba.Linters.Java.Parser.Enums;
-using Femba.Linters.Java.Parser.Interfaces;
-using Femba.Linters.Java.Parser.Models;
+using Femba.Linters.Java.Parser.Utils;
 
-namespace Femba.Linters.Java.Parser.Patterns;
+namespace Femba.Linters.Java.Parser.Patterns.Tokens;
 
 public sealed class KeywordPattern : TokenRegexPattern
 {
@@ -15,8 +14,8 @@ public sealed class KeywordPattern : TokenRegexPattern
 	protected override string PartLexeme(string partition)
 	{
 		if (partition.StartsWith("new")) return "new";
-		if (partition.StartsWith("if")) return "if";
-		if (partition.StartsWith("else")) return "else";
+		if (partition.StartsWith(TokensNames.If)) return TokensNames.If;
+		if (partition.StartsWith(TokensNames.Else)) return TokensNames.Else;
 		if (partition.StartsWith("return")) return "return";
 		if (partition.StartsWith("switch")) return "switch";
 		if (partition.StartsWith("break")) return "break";

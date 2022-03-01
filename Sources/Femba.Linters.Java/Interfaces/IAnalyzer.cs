@@ -4,5 +4,5 @@ public interface IAnalyzer
 {
 	IReadOnlyList<IFeature> Features { get; }
 
-	IList<IAnalyzationResult> Analyze();
+	List<IAnalyzationResult> Analyze();
 }

@@ -3,7 +3,7 @@ using Femba.Linters.Java.Parser.Extensions;
 using Femba.Linters.Java.Parser.Interfaces;
 using Femba.Linters.Java.Parser.Nodes;
 
-namespace Femba.Linters.Java.Parser.Patterns;
+namespace Femba.Linters.Java.Parser.Patterns.Nodes;
 
 public sealed class TypeNodePattern : NodePattern
 {
@@ -12,7 +12,7 @@ public sealed class TypeNodePattern : NodePattern
 		return partition.Count == 1 && partition.First().IsType();
 	}
 
-	public override IReadOnlyList<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
+	public override List<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
 	{
 		var first = partition.First();
 		
@@ -22,6 +22,6 @@ public sealed class TypeNodePattern : NodePattern
 			EndPosition = first.Position + first.Lexeme.Length
 		};
 		
-		return new []{first};
+		return new List<IToken>{first};
 	}
 }

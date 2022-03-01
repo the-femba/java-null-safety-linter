@@ -3,8 +3,9 @@ using Femba.Linters.Java.Parser.Exceptions;
 using Femba.Linters.Java.Parser.Extensions;
 using Femba.Linters.Java.Parser.Interfaces;
 using Femba.Linters.Java.Parser.Nodes;
+using Femba.Linters.Java.Parser.Utils;
 
-namespace Femba.Linters.Java.Parser.Patterns;
+namespace Femba.Linters.Java.Parser.Patterns.Nodes;
 
 public sealed class VariableInvokeNodePattern : NodePattern
 {
@@ -22,16 +23,16 @@ public sealed class VariableInvokeNodePattern : NodePattern
 		
 		if (tokens[^2].IsSymbol(".") && !tokens[^1].IsName()) return false;
 
-		return !(tokens[^2].IsSymbol(";"));
+		return !(tokens[^2].IsSymbol(TokensNames.Semicolon));
 	}
 
-	public override IReadOnlyList<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
+	public override List<IToken> Part(IReadOnlyList<IToken> partition, out INode node)
 	{
 		var tokens = partition.ToList();
 
 		var name = partition[0].Lexeme;
 
-		if (tokens.Last().IsSymbol(";")) tokens.RemoveAt(tokens.Count - 1);
+		if (tokens.Last().IsSymbol(TokensNames.Semicolon)) tokens.RemoveAt(tokens.Count - 1);
 		
 		var dotSymbolIndex = tokens.FindIndex(e => e.IsSymbol("."));
 
@@ -40,7 +41,7 @@ public sealed class VariableInvokeNodePattern : NodePattern
 		{
 			var region = tokens.GetRange(dotSymbolIndex + 1, tokens.Count - dotSymbolIndex - 1);
 
-			after = new Common.Parser(region, Parser!.Patterns.ToList()).ParseNext();
+			after = new Common.Parser(region){Patterns = Parser!.Patterns}.ParseNext();
 			
 			if (after is not VariableInvokeNode && after is not FunctionInvokeNode) throw new ParseLinterException(
 				"After dot must call a field or function.", tokens.First());
@@ -59,6 +60,6 @@ public sealed class VariableInvokeNodePattern : NodePattern
 
 		node = varInvoke;
 		
-		return partition;
+		return partition.ToList();
 	}
 }

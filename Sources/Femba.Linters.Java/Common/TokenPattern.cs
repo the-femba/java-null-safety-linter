@@ -7,8 +7,8 @@ namespace Femba.Linters.Java.Parser.Common;
 public abstract class TokenPattern : ITokenPattern
 {
 	private readonly TokenType _type;
-	
-	public TokenPattern(TokenType type)
+
+	protected TokenPattern(TokenType type)
 	{
 		_type = type;
 	}

@@ -26,6 +26,12 @@ public static class TokenExtensions
 	public static bool IsType(this IToken token)
 		=> token.Type == TokenType.Type;
 	
+	public static bool IsType(this IToken token, string lexeme)
+		=> token.Type == TokenType.Type && token.Lexeme == lexeme;
+	
 	public static bool IsKeyword(this IToken token)
 		=> token.Type == TokenType.Keyword;
+	
+	public static bool IsKeyword(this IToken token, string lexeme)
+		=> token.Type == TokenType.Keyword && token.Lexeme == lexeme;
 }
