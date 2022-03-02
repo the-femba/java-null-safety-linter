@@ -13,7 +13,6 @@ public sealed class NullSafeFeature : IFeature
 	{
 		"byte",
 		"char",
-		"string",
 		"short",
 		"int",
 		"long",
@@ -270,6 +269,8 @@ public sealed class NullSafeFeature : IFeature
 	
 	private bool IsNull(TypeNode type, List<AnnotationNode> annotationNodes)
 	{
+		if (_primitiveTypes.Contains(type.Name)) return false;
+		
 		foreach (var annotation in annotationNodes)
 		{
 			switch (annotation.Type.Name)
@@ -281,6 +282,6 @@ public sealed class NullSafeFeature : IFeature
 			}
 		}
 		
-		return !_primitiveTypes.Contains(type.Name ?? "");
+		return true;
 	}
 }
